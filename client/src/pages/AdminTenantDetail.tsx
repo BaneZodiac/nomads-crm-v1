@@ -106,12 +106,16 @@ export default function AdminTenantDetail() {
               {ALL_MODULES.map(m => (
                 <label key={m.key} className="flex items-center justify-between p-3 rounded-lg border border-gray-100 hover:bg-gray-50 cursor-pointer" onClick={() => toggleModule(m.key)}>
                   <span className="text-sm font-medium text-gray-700">{m.label}</span>
-                  <div className={`w-10 h-6 rounded-full transition-colors duration-200 relative pointer-events-none ${
+                  <div className={`w-10 h-6 rounded-full relative pointer-events-none ${
                     selectedModules.includes(m.key) ? 'bg-brand-500' : 'bg-gray-200'
-                  }`}>
+                  }`} style={{ transition: 'background-color 0.2s' }}>
                     <span
-                      className="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
-                      style={{ transform: selectedModules.includes(m.key) ? 'translateX(18px)' : 'translateX(0)' }}
+                      className="absolute w-5 h-5 bg-white rounded-full shadow"
+                      style={{
+                        top: '2px',
+                        left: selectedModules.includes(m.key) ? '18px' : '2px',
+                        transition: 'left 0.2s ease',
+                      }}
                     />
                   </div>
                 </label>
