@@ -2,6 +2,7 @@ node_modules/
 dist/
 build/
 server/data/
+server/server.log
 *.db
 .env
 .env.local
