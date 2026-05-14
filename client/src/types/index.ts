@@ -4,6 +4,22 @@ export interface User {
   name: string
   role: string
   avatar?: string
+  tenant_id?: string | null
+  is_tenant_admin?: number
+  tenant_name?: string | null
+  modules?: string[] | null
+}
+
+export interface Tenant {
+  id: string
+  name: string
+  domain?: string
+  plan: string
+  status: string
+  modules: string
+  settings?: string
+  user_count?: number
+  created_at: string
 }
 
 export interface Contact {

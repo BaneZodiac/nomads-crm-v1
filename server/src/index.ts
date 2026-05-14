@@ -15,6 +15,7 @@ import quoteRoutes from './routes/quotes';
 import dashboardRoutes from './routes/dashboard';
 import settingsRoutes from './routes/settings';
 import usersRoutes from './routes/users';
+import tenantsRoutes from './routes/tenants';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -37,6 +38,7 @@ app.use('/api/quotes', quoteRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/users', usersRoutes);
+app.use('/api/tenants', tenantsRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

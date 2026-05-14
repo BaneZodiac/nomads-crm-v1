@@ -15,6 +15,7 @@ router.get('/', (req: AuthRequest, res: Response) => {
 
 router.put('/', (req: AuthRequest, res: Response) => {
   const db = getDb();
+  if (req.user?.role !== 'super_admin') return res.status(403).json({ error: 'Super admin access required' });
   const allowed = ['timezone', 'currency', 'currency_symbol', 'date_format', 'company_name', 'language', 'business_hours_start', 'business_hours_end'];
   const upsert = db.prepare('INSERT INTO settings (key, value, updated_at) VALUES (?, ?, CURRENT_TIMESTAMP) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = CURRENT_TIMESTAMP');
   const tx = db.transaction(() => {

@@ -1,24 +1,25 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield } from 'lucide-react'
+import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield, Building, UserCog } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-const mainItems = [
-  { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/contacts', icon: Users, label: 'Contacts' },
-  { to: '/companies', icon: Building2, label: 'Companies' },
-  { to: '/deals', icon: TrendingUp, label: 'Deals' },
-  { to: '/activities', icon: CalendarCheck, label: 'Activities' },
-  { to: '/notes', icon: FileText, label: 'Notes' },
-  { to: '/quotes', icon: FileSignature, label: 'Quotes' },
-]
-
-const adminItems = [
-  { to: '/admin/settings', icon: Settings, label: 'Settings' },
-  { to: '/admin/users', icon: Shield, label: 'Users' },
+const modules = [
+  { key: 'contacts', icon: Users, label: 'Contacts' },
+  { key: 'companies', icon: Building2, label: 'Companies' },
+  { key: 'deals', icon: TrendingUp, label: 'Deals' },
+  { key: 'activities', icon: CalendarCheck, label: 'Activities' },
+  { key: 'notes', icon: FileText, label: 'Notes' },
+  { key: 'quotes', icon: FileSignature, label: 'Quotes' },
 ]
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
+  const isSuper = user?.role === 'super_admin'
+  const isTenantAdmin = user?.is_tenant_admin
+  const enabledModules = user?.modules || modules.map(m => m.key)
+
+  const mainItems = modules
+    .filter(m => isSuper || enabledModules.includes(m.key))
+    .map(m => ({ to: `/${m.key}`, icon: m.icon, label: m.label }))
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 flex flex-col z-40">
@@ -35,11 +36,25 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+        <NavLink
+          to="/"
+          end
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive
+                ? 'bg-brand-50 text-brand-600 border border-brand-100'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+            }`
+          }
+        >
+          <LayoutDashboard size={20} />
+          Dashboard
+        </NavLink>
+
         {mainItems.map(item => (
           <NavLink
             key={item.to}
             to={item.to}
-            end={item.to === '/'}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isActive
@@ -52,14 +67,15 @@ export default function Sidebar() {
             {item.label}
           </NavLink>
         ))}
+
         <div className="pt-4 pb-2">
           <div className="border-t border-gray-100" />
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1 px-3">Administration</p>
         </div>
-        {adminItems.map(item => (
+
+        {isSuper && (
           <NavLink
-            key={item.to}
-            to={item.to}
+            to="/admin/tenants"
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isActive
@@ -68,10 +84,40 @@ export default function Sidebar() {
               }`
             }
           >
-            <item.icon size={20} />
-            {item.label}
+            <Building size={20} />
+            Tenants
           </NavLink>
-        ))}
+        )}
+
+        <NavLink
+          to="/admin/users"
+          className={({ isActive }) =>
+            `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              isActive
+                ? 'bg-brand-50 text-brand-600 border border-brand-100'
+                : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+            }`
+          }
+        >
+          <UserCog size={20} />
+          Users
+        </NavLink>
+
+        {isSuper && (
+          <NavLink
+            to="/admin/settings"
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                isActive
+                  ? 'bg-brand-50 text-brand-600 border border-brand-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+              }`
+            }
+          >
+            <Settings size={20} />
+            Settings
+          </NavLink>
+        )}
       </nav>
 
       <div className="p-4 border-t border-gray-100">
@@ -82,6 +128,9 @@ export default function Sidebar() {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">{user?.name || 'User'}</p>
             <p className="text-xs text-gray-400 truncate">{user?.email}</p>
+            {user?.tenant_name && (
+              <p className="text-xs text-brand-500 truncate">{user.tenant_name}</p>
+            )}
           </div>
         </div>
         <button

@@ -14,12 +14,57 @@ export function getDb(): Database.Database {
     db.pragma('journal_mode = WAL');
     db.pragma('foreign_keys = ON');
     initSchema();
+    migrate();
   }
   return db;
 }
 
+function hasColumn(table: string, column: string): boolean {
+  const cols = db.prepare(`PRAGMA table_info(${table})`).all() as any[];
+  return cols.some((c: any) => c.name === column);
+}
+
+function migrate() {
+  const migrations = [
+    ['users', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['users', 'is_tenant_admin', "INTEGER DEFAULT 0"],
+    ['contacts', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['companies', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['deals', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['activities', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['notes', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['comments', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['quotes', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+  ];
+  for (const [table, column, def] of migrations) {
+    if (!hasColumn(table, column)) {
+      db.exec(`ALTER TABLE ${table} ADD COLUMN ${column} ${def}`);
+    }
+  }
+
+  const superAdmin = db.prepare("SELECT id FROM users WHERE role = 'super_admin'").get();
+  if (!superAdmin) {
+    const existingAdmin = db.prepare("SELECT id FROM users WHERE role = 'admin'").get() as any;
+    if (existingAdmin) {
+      db.prepare("UPDATE users SET role = 'super_admin' WHERE id = ?").run(existingAdmin.id);
+    }
+  }
+}
+
 function initSchema() {
   db.exec(`
+    CREATE TABLE IF NOT EXISTS tenants (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      domain TEXT,
+      plan TEXT DEFAULT 'free',
+      status TEXT DEFAULT 'active',
+      modules TEXT DEFAULT '["contacts","companies","deals","activities","notes","quotes"]',
+      settings TEXT DEFAULT '{}',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
     CREATE TABLE IF NOT EXISTS users (
       id TEXT PRIMARY KEY,
       email TEXT UNIQUE NOT NULL,

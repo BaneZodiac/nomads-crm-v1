@@ -13,6 +13,8 @@ import ContactDetail from './pages/ContactDetail'
 import Quotes from './pages/Quotes'
 import AdminSettings from './pages/AdminSettings'
 import AdminUsers from './pages/AdminUsers'
+import AdminTenants from './pages/AdminTenants'
+import AdminTenantDetail from './pages/AdminTenantDetail'
 import { Compass } from 'lucide-react'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -51,6 +53,8 @@ export default function App() {
                 <Route path="/contacts/:id" element={<ContactDetail />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
                 <Route path="/admin/users" element={<AdminUsers />} />
+                <Route path="/admin/tenants" element={<AdminTenants />} />
+                <Route path="/admin/tenants/:id" element={<AdminTenantDetail />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Layout>

@@ -1,5 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import { Bell, Search } from 'lucide-react'
+import { useAuth } from '../context/AuthContext'
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -12,12 +13,20 @@ const pageTitles: Record<string, string> = {
 
 export default function Header() {
   const location = useLocation()
+  const { user } = useAuth()
   const title = pageTitles[location.pathname] || 'Dashboard'
 
   return (
     <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-8 sticky top-0 z-30">
       <div>
-        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+        <div className="flex items-center gap-2">
+          <h2 className="text-xl font-bold text-gray-900">{title}</h2>
+          {user?.tenant_name && user?.role !== 'super_admin' && (
+            <span className="px-2 py-0.5 bg-brand-50 text-brand-600 text-xs font-medium rounded-full">
+              {user.tenant_name}
+            </span>
+          )}
+        </div>
         <p className="text-xs text-gray-400 mt-0.5">
           {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
