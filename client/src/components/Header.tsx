@@ -3,7 +3,6 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { Bell, Search, CheckCheck, ExternalLink } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useNotifications } from '../context/NotificationContext'
-import { useMenuClose } from '../hooks/useClickOutside'
 
 const pageTitles: Record<string, string> = {
   '/': 'Dashboard',
@@ -21,7 +20,6 @@ export default function Header() {
   const { user } = useAuth()
   const { notifications, unreadCount, markRead, markAllRead } = useNotifications()
   const [menuOpen, setMenuOpen] = useState(false)
-  useMenuClose(menuOpen ? 'open' : null, () => setMenuOpen(false))
   const title = pageTitles[location.pathname] || 'Dashboard'
 
   return (
@@ -58,34 +56,37 @@ export default function Header() {
             )}
           </button>
           {menuOpen && (
-            <div onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-gray-50">
-                <p className="text-sm font-semibold text-gray-900">Notifications</p>
-                {unreadCount > 0 && (
-                  <button onClick={markAllRead} className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1">
-                    <CheckCheck size={14} /> Mark all read
-                  </button>
-                )}
-              </div>
-              <div className="max-h-80 overflow-y-auto">
-                {notifications.length === 0 ? (
-                  <p className="text-sm text-gray-400 text-center py-8">No notifications yet</p>
-                ) : notifications.map(n => (
-                  <div key={n.id}
-                    className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${!n.is_read ? 'bg-brand-50/50' : ''}`}
-                    onClick={() => { markRead(n.id); if (n.link) navigate(n.link); setMenuOpen(false) }}
-                  >
-                    <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.is_read ? 'bg-transparent' : 'bg-brand-500'}`} />
-                    <div className="flex-1 min-w-0">
-                      <p className={`text-sm ${n.is_read ? 'text-gray-600' : 'text-gray-900 font-medium'}`}>{n.title}</p>
-                      {n.message && <p className="text-xs text-gray-400 mt-0.5 truncate">{n.message}</p>}
-                      <p className="text-xs text-gray-300 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-gray-50">
+                  <p className="text-sm font-semibold text-gray-900">Notifications</p>
+                  {unreadCount > 0 && (
+                    <button onClick={markAllRead} className="text-xs text-brand-600 hover:text-brand-700 flex items-center gap-1">
+                      <CheckCheck size={14} /> Mark all read
+                    </button>
+                  )}
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <p className="text-sm text-gray-400 text-center py-8">No notifications yet</p>
+                  ) : notifications.map(n => (
+                    <div key={n.id}
+                      className={`flex items-start gap-3 px-4 py-3 hover:bg-gray-50 cursor-pointer transition-colors ${!n.is_read ? 'bg-brand-50/50' : ''}`}
+                      onClick={() => { markRead(n.id); if (n.link) navigate(n.link); setMenuOpen(false) }}
+                    >
+                      <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${n.is_read ? 'bg-transparent' : 'bg-brand-500'}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm ${n.is_read ? 'text-gray-600' : 'text-gray-900 font-medium'}`}>{n.title}</p>
+                        {n.message && <p className="text-xs text-gray-400 mt-0.5 truncate">{n.message}</p>}
+                        <p className="text-xs text-gray-300 mt-1">{new Date(n.created_at).toLocaleDateString()}</p>
+                      </div>
+                      {n.link && <ExternalLink size={14} className="text-gray-300 mt-1 shrink-0" />}
                     </div>
-                    {n.link && <ExternalLink size={14} className="text-gray-300 mt-1 shrink-0" />}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       </div>
