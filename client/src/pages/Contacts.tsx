@@ -71,75 +71,73 @@ export default function Contacts() {
       </div>
 
       <div className="card overflow-x-auto">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="table-header">Name</th>
-                <th className="table-header">Email</th>
-                <th className="table-header">Phone</th>
-                <th className="table-header">Company</th>
-                <th className="table-header">Job Title</th>
-                <th className="table-header">Status</th>
-                <th className="table-header">Lead Score</th>
-                <th className="table-header w-20">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map(c => (
-                <tr key={c.id} className="hover:bg-brand-50/30 transition-colors">
-                  <td className="table-cell">
-                    <div className="flex items-center gap-3 group">
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center text-white text-sm font-semibold">
-                        {c.name.charAt(0)}
-                      </div>
-                      <button onClick={() => navigate(`/contacts/${c.id}`)} className="font-medium text-gray-900 hover:text-brand-600 flex items-center gap-1 transition-colors">
-                        {c.name} <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="table-header">Name</th>
+              <th className="table-header">Email</th>
+              <th className="table-header">Phone</th>
+              <th className="table-header">Company</th>
+              <th className="table-header">Job Title</th>
+              <th className="table-header">Status</th>
+              <th className="table-header">Lead Score</th>
+              <th className="table-header w-20">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {filtered.map(c => (
+              <tr key={c.id} className="hover:bg-brand-50/30 transition-colors">
+                <td className="table-cell">
+                  <div className="flex items-center gap-3 group">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center text-white text-sm font-semibold">
+                      {c.name.charAt(0)}
+                    </div>
+                    <button onClick={() => navigate(`/contacts/${c.id}`)} className="font-medium text-gray-900 hover:text-brand-600 flex items-center gap-1 transition-colors">
+                      {c.name} <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  </div>
+                </td>
+                <td className="table-cell">
+                  <div className="flex items-center gap-1.5">
+                    <Mail size={14} className="text-gray-300" />
+                    <span>{c.email}</span>
+                  </div>
+                </td>
+                <td className="table-cell">
+                  <div className="flex items-center gap-1.5">
+                    <Phone size={14} className="text-gray-300" />
+                    <span>{c.phone || '-'}</span>
+                  </div>
+                </td>
+                <td className="table-cell">{c.company_name || '-'}</td>
+                <td className="table-cell">{c.job_title || '-'}</td>
+                <td className="table-cell">
+                  <span className={c.status === 'active' ? 'badge-green' : 'badge-gray'}>{c.status}</span>
+                </td>
+                <td className="table-cell">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${(c.lead_score ?? 0) >= 70 ? 'bg-green-100 text-green-700' : (c.lead_score ?? 0) >= 40 ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
+                    {c.lead_score ?? 0}/100
+                  </span>
+                </td>
+                <td className="table-cell relative">
+                  <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === c.id ? null : c.id) }} className="p-1 hover:bg-gray-100 rounded">
+                    <MoreHorizontal size={16} className="text-gray-400" />
+                  </button>
+                  {menuOpen === c.id && (
+                    <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
+                      <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Edit2 size={14} /> Edit
+                      </button>
+                      <button onClick={() => { setDeleting(c); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                        <Trash2 size={14} /> Delete
                       </button>
                     </div>
-                  </td>
-                  <td className="table-cell">
-                    <div className="flex items-center gap-1.5">
-                      <Mail size={14} className="text-gray-300" />
-                      <span>{c.email || '-'}</span>
-                    </div>
-                  </td>
-                  <td className="table-cell">
-                    <div className="flex items-center gap-1.5">
-                      <Phone size={14} className="text-gray-300" />
-                      <span>{c.phone || '-'}</span>
-                    </div>
-                  </td>
-                  <td className="table-cell">{c.company_name || '-'}</td>
-                  <td className="table-cell">{c.job_title || '-'}</td>
-                  <td className="table-cell">
-                    <span className={c.status === 'active' ? 'badge-green' : 'badge-gray'}>{c.status}</span>
-                  </td>
-                  <td className="table-cell">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${(c.lead_score ?? 0) >= 70 ? 'bg-green-100 text-green-700' : (c.lead_score ?? 0) >= 40 ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {c.lead_score ?? 0}/100
-                    </span>
-                  </td>
-                  <td className="table-cell relative">
-                    <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === c.id ? null : c.id) }} className="p-1 hover:bg-gray-100 rounded">
-                      <MoreHorizontal size={16} className="text-gray-400" />
-                    </button>
-                    {menuOpen === c.id && (
-                      <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                        <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                          <Edit2 size={14} /> Edit
-                        </button>
-                        <button onClick={() => { setDeleting(c); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                          <Trash2 size={14} /> Delete
-                        </button>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {filtered.length === 0 && (
           <div className="text-center py-12 text-gray-400">
             <p>No contacts found</p>

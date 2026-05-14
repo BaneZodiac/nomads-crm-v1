@@ -219,7 +219,6 @@ export default function Finance() {
             <button onClick={() => openInvoiceModal()} className="btn-primary flex items-center gap-2"><Plus size={18} /> New Invoice</button>
           </div>
           <div className="card overflow-x-auto">
-            <div className="overflow-x-auto">
             <table className="w-full">
               <thead><tr className="bg-gray-50">
                 <th className="table-header">Invoice #</th>
@@ -261,7 +260,6 @@ export default function Finance() {
                 ))}
               </tbody>
             </table>
-            </div>
           </div>
         </>
       )}
@@ -278,7 +276,6 @@ export default function Finance() {
             <button onClick={() => openExpenseModal()} className="btn-primary flex items-center gap-2"><Plus size={18} /> New Expense</button>
           </div>
           <div className="card overflow-x-auto">
-            <div className="overflow-x-auto">
             <table className="w-full">
               <thead><tr className="bg-gray-50">
                 <th className="table-header">Title</th>
@@ -315,7 +312,6 @@ export default function Finance() {
                 ))}
               </tbody>
             </table>
-            </div>
           </div>
         </>
       )}

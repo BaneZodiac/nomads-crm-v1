@@ -96,7 +96,6 @@ export default function AdminUsers() {
       </div>
 
       <div className="card overflow-x-auto">
-        <div className="overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50">
@@ -163,7 +162,6 @@ export default function AdminUsers() {
             ))}
           </tbody>
         </table>
-        </div>
       </div>
 
       <Modal open={showInvite} onClose={() => setShowInvite(false)} title="Invite User">

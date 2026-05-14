@@ -74,69 +74,51 @@ export default function Activities() {
       </div>
 
       <div className="card overflow-x-auto">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="bg-gray-50">
-                <th className="table-header">Type</th>
-                <th className="table-header">Subject</th>
-                <th className="table-header">Contact</th>
-                <th className="table-header">Company</th>
-                <th className="table-header">Priority</th>
-                <th className="table-header">Due Date</th>
-                <th className="table-header">Status</th>
-                <th className="table-header w-24">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {filtered.map(a => (
-                <tr key={a.id} className="hover:bg-brand-50/30 transition-colors">
-                  <td className="table-cell">
-                    <span className={ACTIVITY_TYPE_COLORS[a.type]}>{ACTIVITY_TYPES[a.type] || a.type}</span>
-                  </td>
-                  <td className="table-cell font-medium text-gray-900">{a.subject}</td>
-                  <td className="table-cell">{a.contact_name || '-'}</td>
-                  <td className="table-cell">{a.company_name || '-'}</td>
-                  <td className="table-cell">
-                    <span className={`badge ${a.priority === 'high' ? 'badge-red' : a.priority === 'medium' ? 'badge-orange' : 'badge-gray'}`}>
-                      {a.priority}
-                    </span>
-                  </td>
-                  <td className="table-cell text-gray-500">
-                    {a.due_date ? new Date(a.due_date).toLocaleDateString() : '-'}
-                  </td>
-                  <td className="table-cell">
-                    <span className={a.status === 'completed' ? 'badge-green' : a.status === 'scheduled' ? 'badge-blue' : 'badge-orange'}>
-                      {a.status}
-                    </span>
-                  </td>
-                  <td className="table-cell">
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => toggleStatus(a)} className="p-1 hover:bg-gray-100 rounded" title={a.status === 'completed' ? 'Reopen' : 'Complete'}>
-                        {a.status === 'completed' ? <XCircle size={16} className="text-gray-400" /> : <CheckCircle size={16} className="text-green-400" />}
+        <table className="w-full">
+          <thead>
+            <tr className="bg-gray-50">
+              <th className="table-header">Type</th>
+              <th className="table-header">Subject</th>
+              <th className="table-header">Contact</th>
+              <th className="table-header">Company</th>
+              <th className="table-header">Due Date</th>
+              <th className="table-header">Status</th>
+              <th className="table-header w-20">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-50">
+            {filtered.map(a => (
+              <tr key={a.id} className="hover:bg-brand-50/30 transition-colors">
+                <td className="table-cell"><span className="badge-gray">{a.type}</span></td>
+                <td className="table-cell font-medium text-gray-900">{a.subject}</td>
+                <td className="table-cell">{a.contact_name || '-'}</td>
+                <td className="table-cell">{a.company_name || '-'}</td>
+                <td className="table-cell text-gray-500">{a.due_date ? new Date(a.due_date).toLocaleDateString() : '-'}</td>
+                <td className="table-cell">
+                  <span className={a.status === 'completed' ? 'badge-green' : 'badge-orange'}>{a.status}</span>
+                </td>
+                <td className="table-cell relative">
+                  <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === a.id ? null : a.id) }} className="p-1 hover:bg-gray-100 rounded">
+                    <MoreHorizontal size={16} className="text-gray-400" />
+                  </button>
+                  {menuOpen === a.id && (
+                    <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
+                      <button onClick={() => { openEdit(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        <Edit2 size={14} /> Edit
                       </button>
-                      <div className="relative">
-                        <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === a.id ? null : a.id) }} className="p-1 hover:bg-gray-100 rounded">
-                          <MoreHorizontal size={16} className="text-gray-400" />
-                        </button>
-                        {menuOpen === a.id && (
-                          <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                            <button onClick={() => openEdit(a)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              <Edit2 size={14} /> Edit
-                            </button>
-                            <button onClick={() => { setDeleting(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                              <Trash2 size={14} /> Delete
-                            </button>
-                          </div>
-                        )}
-                      </div>
+                      <button onClick={() => { toggleStatus(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-600 hover:bg-green-50">
+                        <CheckCircle size={14} /> Complete
+                      </button>
+                      <button onClick={() => { setDeleting(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                        <Trash2 size={14} /> Delete
+                      </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
         {filtered.length === 0 && <div className="text-center py-12 text-gray-400"><p>No activities found</p></div>}
       </div>
 

@@ -55,7 +55,7 @@ export default function Quotes() {
         <button onClick={openCreate} className="btn-primary flex items-center gap-2"><Plus size={18} /> New Quote</button>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-x-auto">
         <table className="w-full">
           <thead>
             <tr className="bg-gray-50">
