@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useData } from '../context/DataContext'
-import { Building2, Users, TrendingUp, DollarSign } from 'lucide-react'
+import { Building2, Users, TrendingUp, DollarSign, Flame, Clock, AlertCircle } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { STAGE_LABELS, ACTIVITY_TYPES } from '../types'
 
@@ -70,6 +70,44 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {dashboard.alerts && (dashboard.alerts.staleDeals.length > 0 || dashboard.alerts.hotLeads.length > 0 || dashboard.alerts.overdueActivities.length > 0) && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {dashboard.alerts.overdueActivities.length > 0 && (
+            <div className="card p-4 border-l-4 border-red-400">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertCircle size={18} className="text-red-500" />
+                <h3 className="text-sm font-semibold text-red-700">Overdue Tasks</h3>
+              </div>
+              {dashboard.alerts.overdueActivities.slice(0, 3).map((a: any) => (
+                <p key={a.id} className="text-xs text-gray-600 truncate">{a.subject}</p>
+              ))}
+            </div>
+          )}
+          {dashboard.alerts.hotLeads.length > 0 && (
+            <div className="card p-4 border-l-4 border-brand-400">
+              <div className="flex items-center gap-2 mb-2">
+                <Flame size={18} className="text-brand-500" />
+                <h3 className="text-sm font-semibold text-brand-700">Hot Leads</h3>
+              </div>
+              {dashboard.alerts.hotLeads.slice(0, 3).map((d: any) => (
+                <p key={d.id} className="text-xs text-gray-600 truncate">{d.title} — ${d.value.toLocaleString()}</p>
+              ))}
+            </div>
+          )}
+          {dashboard.alerts.staleDeals.length > 0 && (
+            <div className="card p-4 border-l-4 border-gray-400">
+              <div className="flex items-center gap-2 mb-2">
+                <Clock size={18} className="text-gray-500" />
+                <h3 className="text-sm font-semibold text-gray-700">Stale Deals</h3>
+              </div>
+              {dashboard.alerts.staleDeals.slice(0, 3).map((d: any) => (
+                <p key={d.id} className="text-xs text-gray-600 truncate">{d.title} — {d.contact_name || 'No contact'}</p>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="card p-6">

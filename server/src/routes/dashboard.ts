@@ -19,6 +19,25 @@ router.get('/', (req: AuthRequest, res: Response) => {
   const upcomingActivities = db.prepare(`SELECT a.*, u.name as assigned_name FROM activities a LEFT JOIN users u ON a.assigned_to = u.id WHERE a.status IN ('pending','scheduled') AND a.due_date IS NOT NULL ORDER BY a.due_date ASC LIMIT 5`).all();
   const topContacts = db.prepare(`SELECT c.*, comp.name as company_name FROM contacts c LEFT JOIN companies comp ON c.company_id = comp.id ORDER BY c.created_at DESC LIMIT 5`).all();
 
+  const staleDeals = db.prepare(`SELECT d.*, c.name as contact_name, comp.name as company_name
+    FROM deals d LEFT JOIN contacts c ON d.contact_id = c.id
+    LEFT JOIN companies comp ON d.company_id = comp.id
+    WHERE d.stage NOT IN ('closed_won','closed_lost')
+    AND d.updated_at < datetime('now', '-7 days')
+    ORDER BY d.updated_at ASC LIMIT 5`).all();
+
+  const hotLeads = db.prepare(`SELECT d.*, c.name as contact_name, comp.name as company_name, c.email as contact_email
+    FROM deals d LEFT JOIN contacts c ON d.contact_id = c.id
+    LEFT JOIN companies comp ON d.company_id = comp.id
+    WHERE d.stage IN ('negotiation','proposal') AND d.probability >= 50
+    ORDER BY d.value DESC LIMIT 5`).all();
+
+  const overdueActivities = db.prepare(`SELECT a.*, u.name as assigned_name
+    FROM activities a LEFT JOIN users u ON a.assigned_to = u.id
+    WHERE a.status IN ('pending','scheduled')
+    AND a.due_date IS NOT NULL AND a.due_date < datetime('now')
+    ORDER BY a.due_date ASC LIMIT 5`).all();
+
   res.json({
     totalContacts,
     totalCompanies,
@@ -29,6 +48,7 @@ router.get('/', (req: AuthRequest, res: Response) => {
     recentActivities,
     upcomingActivities,
     topContacts,
+    alerts: { staleDeals, hotLeads, overdueActivities },
   });
 });
 

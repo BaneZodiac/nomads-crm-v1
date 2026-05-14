@@ -10,6 +10,8 @@ import companyRoutes from './routes/companies';
 import dealRoutes from './routes/deals';
 import activityRoutes from './routes/activities';
 import noteRoutes from './routes/notes';
+import commentRoutes from './routes/comments';
+import quoteRoutes from './routes/quotes';
 import dashboardRoutes from './routes/dashboard';
 
 const app = express();
@@ -28,6 +30,8 @@ app.use('/api/companies', companyRoutes);
 app.use('/api/deals', dealRoutes);
 app.use('/api/activities', activityRoutes);
 app.use('/api/notes', noteRoutes);
+app.use('/api/comments', commentRoutes);
+app.use('/api/quotes', quoteRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 
 app.get('/api/health', (_req, res) => {

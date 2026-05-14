@@ -108,5 +108,29 @@ function initSchema() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS comments (
+      id TEXT PRIMARY KEY,
+      content TEXT NOT NULL,
+      contact_id TEXT REFERENCES contacts(id),
+      deal_id TEXT REFERENCES deals(id),
+      created_by TEXT REFERENCES users(id),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS quotes (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      value REAL DEFAULT 0,
+      status TEXT DEFAULT 'draft',
+      contact_id TEXT REFERENCES contacts(id),
+      company_id TEXT REFERENCES companies(id),
+      deal_id TEXT REFERENCES deals(id),
+      items TEXT DEFAULT '[]',
+      notes TEXT,
+      created_by TEXT REFERENCES users(id),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
 }

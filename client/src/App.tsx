@@ -9,6 +9,8 @@ import Companies from './pages/Companies'
 import Deals from './pages/Deals'
 import Activities from './pages/Activities'
 import Notes from './pages/Notes'
+import ContactDetail from './pages/ContactDetail'
+import Quotes from './pages/Quotes'
 import { Compass } from 'lucide-react'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -43,6 +45,8 @@ export default function App() {
                 <Route path="/deals" element={<Deals />} />
                 <Route path="/activities" element={<Activities />} />
                 <Route path="/notes" element={<Notes />} />
+                <Route path="/quotes" element={<Quotes />} />
+                <Route path="/contacts/:id" element={<ContactDetail />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Layout>

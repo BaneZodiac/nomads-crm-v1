@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
-import { Plus, Search, Mail, Phone, MoreHorizontal, Edit2, Trash2 } from 'lucide-react'
+import { Plus, Search, Mail, Phone, MoreHorizontal, Edit2, Trash2, ExternalLink } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
 import { Contact } from '../types'
 
 export default function Contacts() {
+  const navigate = useNavigate()
   const { contacts, companies, fetchContacts, fetchCompanies, createContact, updateContact, deleteContact } = useData()
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false)
@@ -77,6 +79,7 @@ export default function Contacts() {
                 <th className="table-header">Company</th>
                 <th className="table-header">Job Title</th>
                 <th className="table-header">Status</th>
+                <th className="table-header">Lead Score</th>
                 <th className="table-header w-20">Actions</th>
               </tr>
             </thead>
@@ -84,11 +87,13 @@ export default function Contacts() {
               {filtered.map(c => (
                 <tr key={c.id} className="hover:bg-brand-50/30 transition-colors">
                   <td className="table-cell">
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 group">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-brand-300 to-brand-500 flex items-center justify-center text-white text-sm font-semibold">
                         {c.name.charAt(0)}
                       </div>
-                      <span className="font-medium text-gray-900">{c.name}</span>
+                      <button onClick={() => navigate(`/contacts/${c.id}`)} className="font-medium text-gray-900 hover:text-brand-600 flex items-center gap-1 transition-colors">
+                        {c.name} <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </button>
                     </div>
                   </td>
                   <td className="table-cell">
@@ -107,6 +112,11 @@ export default function Contacts() {
                   <td className="table-cell">{c.job_title || '-'}</td>
                   <td className="table-cell">
                     <span className={c.status === 'active' ? 'badge-green' : 'badge-gray'}>{c.status}</span>
+                  </td>
+                  <td className="table-cell">
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${(c.lead_score ?? 0) >= 70 ? 'bg-green-100 text-green-700' : (c.lead_score ?? 0) >= 40 ? 'bg-brand-100 text-brand-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {c.lead_score ?? 0}/100
+                    </span>
                   </td>
                   <td className="table-cell relative">
                     <button onClick={() => setMenuOpen(menuOpen === c.id ? null : c.id)} className="p-1 hover:bg-gray-100 rounded">

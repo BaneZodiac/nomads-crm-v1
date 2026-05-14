@@ -21,6 +21,7 @@ export interface Contact {
   created_by?: string
   created_at: string
   updated_at: string
+  lead_score?: number
 }
 
 export interface Company {
@@ -97,6 +98,11 @@ export interface DashboardData {
   recentActivities: Activity[]
   upcomingActivities: Activity[]
   topContacts: Contact[]
+  alerts: {
+    staleDeals: Deal[]
+    hotLeads: Deal[]
+    overdueActivities: Activity[]
+  }
 }
 
 export const STAGE_LABELS: Record<string, string> = {
@@ -106,6 +112,32 @@ export const STAGE_LABELS: Record<string, string> = {
   negotiation: 'Negotiation',
   closed_won: 'Closed Won',
   closed_lost: 'Closed Lost',
+}
+
+export interface Comment {
+  id: string
+  content: string
+  contact_id?: string
+  deal_id?: string
+  created_by?: string
+  created_by_name?: string
+  created_at: string
+}
+
+export interface Quote {
+  id: string
+  title: string
+  value: number
+  status: string
+  contact_id?: string
+  contact_name?: string
+  company_id?: string
+  company_name?: string
+  deal_id?: string
+  items: string
+  notes?: string
+  created_by_name?: string
+  created_at: string
 }
 
 export const STAGE_COLORS: Record<string, string> = {
