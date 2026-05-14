@@ -1,17 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
 export function useMenuClose(menuOpen: string | null, setMenuOpen: (v: string | null) => void) {
-  const timerRef = useRef<number | null>(null)
   useEffect(() => {
-    if (timerRef.current !== null) { clearTimeout(timerRef.current); timerRef.current = null }
     if (!menuOpen) return
-    const close = () => {
-      timerRef.current = window.setTimeout(() => { setMenuOpen(null); timerRef.current = null }, 0)
+    const handle = (e: MouseEvent) => {
+      if (!(e.target as HTMLElement).closest('.action-menu-dropdown')) {
+        setMenuOpen(null)
+      }
     }
-    document.addEventListener('mousedown', close)
-    return () => {
-      document.removeEventListener('mousedown', close)
-      if (timerRef.current !== null) { clearTimeout(timerRef.current); timerRef.current = null }
-    }
+    document.addEventListener('click', handle)
+    return () => document.removeEventListener('click', handle)
   }, [menuOpen, setMenuOpen])
 }
