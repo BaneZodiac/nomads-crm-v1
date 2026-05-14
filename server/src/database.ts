@@ -132,5 +132,27 @@ function initSchema() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
+
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
   `);
+
+  const existingSettings = db.prepare('SELECT COUNT(*) as count FROM settings').get() as any;
+  if (existingSettings.count === 0) {
+    const defaults = [
+      ['timezone', 'UTC'],
+      ['currency', 'USD'],
+      ['currency_symbol', '$'],
+      ['date_format', 'MM/DD/YYYY'],
+      ['company_name', 'Nomads Cipher'],
+      ['language', 'en'],
+      ['business_hours_start', '09:00'],
+      ['business_hours_end', '17:00'],
+    ];
+    const insert = db.prepare('INSERT OR IGNORE INTO settings (key, value) VALUES (?, ?)');
+    defaults.forEach(([k, v]) => insert.run(k, v));
+  }
 }

@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature } from 'lucide-react'
+import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const navItems = [
@@ -10,6 +10,8 @@ const navItems = [
   { to: '/activities', icon: CalendarCheck, label: 'Activities' },
   { to: '/notes', icon: FileText, label: 'Notes' },
   { to: '/quotes', icon: FileSignature, label: 'Quotes' },
+  { to: '/admin/settings', icon: Settings, label: 'Settings' },
+  { to: '/admin/users', icon: Shield, label: 'Users' },
 ]
 
 export default function Sidebar() {
