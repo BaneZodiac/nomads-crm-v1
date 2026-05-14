@@ -40,6 +40,7 @@ export default function ContactDetail() {
   if (!contact) return <div className="text-center py-12 text-gray-400">Loading...</div>
 
   const score = contact.lead_score ?? 0
+  const factors = contact.lead_factors ?? []
   const scoreColor = score >= 70 ? 'text-green-600 bg-green-100' : score >= 40 ? 'text-brand-600 bg-brand-100' : 'text-gray-600 bg-gray-100'
 
   return (
@@ -61,6 +62,15 @@ export default function ContactDetail() {
               </span>
               <span className={contact.status === 'active' ? 'badge-green' : 'badge-gray'}>{contact.status}</span>
             </div>
+            {factors.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {factors.map((f, i) => (
+                  <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 text-gray-500 text-xs rounded-full">
+                    <span className="text-brand-600 font-medium">+{f.points}</span> {f.label}
+                  </span>
+                ))}
+              </div>
+            )}
             <div className="flex flex-wrap gap-4 mt-2">
               {contact.email && <span className="flex items-center gap-1.5 text-sm text-gray-500"><Mail size={14} />{contact.email}</span>}
               {contact.phone && <span className="flex items-center gap-1.5 text-sm text-gray-500"><Phone size={14} />{contact.phone}</span>}

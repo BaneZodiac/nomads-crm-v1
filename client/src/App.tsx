@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { SettingsProvider } from './context/SettingsContext'
+import { NotificationProvider } from './context/NotificationContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -44,6 +45,7 @@ export default function App() {
         <ProtectedRoute>
           <SettingsProvider>
           <DataProvider>
+          <NotificationProvider>
             <Layout>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
@@ -62,6 +64,7 @@ export default function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </Layout>
+          </NotificationProvider>
           </DataProvider>
           </SettingsProvider>
         </ProtectedRoute>

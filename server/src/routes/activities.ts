@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { getDb } from '../database';
 import { authenticate, AuthRequest, tenantScope } from '../middleware/auth';
+import { createNotification } from './notifications';
 
 const router = Router();
 router.use(authenticate);
@@ -28,9 +29,13 @@ router.post('/', (req: AuthRequest, res: Response) => {
   const id = uuid();
   const { type, subject, description, status, priority, due_date, contact_id, company_id, deal_id, assigned_to } = req.body;
   if (!type || !subject) return res.status(400).json({ error: 'Type and subject are required' });
+  const assignee = assigned_to || req.user!.id;
   db.prepare(`INSERT INTO activities (id, type, subject, description, status, priority, due_date, contact_id, company_id, deal_id, assigned_to, created_by, tenant_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`)
-    .run(id, type, subject, description, status || 'pending', priority || 'medium', due_date, contact_id, company_id, deal_id, assigned_to || req.user!.id, req.user!.id, req.user!.tenant_id || null);
+    .run(id, type, subject, description, status || 'pending', priority || 'medium', due_date, contact_id, company_id, deal_id, assignee, req.user!.id, req.user!.tenant_id || null);
   const activity = db.prepare('SELECT * FROM activities WHERE id = ?').get(id);
+  if (assignee !== req.user!.id) {
+    createNotification(assignee, 'activity_assigned', `Activity assigned: ${subject}`, `Type: ${type}`, `/activities`, req.user!.tenant_id || undefined);
+  }
   res.status(201).json(activity);
 });
 

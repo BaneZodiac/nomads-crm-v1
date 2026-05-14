@@ -38,6 +38,7 @@ export interface Contact {
   created_at: string
   updated_at: string
   lead_score?: number
+  lead_factors?: { label: string; points: number }[]
 }
 
 export interface Company {
@@ -235,6 +236,18 @@ export const ACTIVITY_TYPES: Record<string, string> = {
   task: 'Task',
   demo: 'Demo',
   lunch: 'Lunch',
+}
+
+export interface Notification {
+  id: string
+  user_id: string
+  type: string
+  title: string
+  message?: string
+  link?: string
+  is_read: number
+  tenant_id?: string
+  created_at: string
 }
 
 export const ACTIVITY_TYPE_COLORS: Record<string, string> = {

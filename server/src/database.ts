@@ -37,6 +37,7 @@ function migrate() {
     ['quotes', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
     ['invoices', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
     ['expenses', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['notifications', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
   ];
   for (const [table, column, def] of migrations) {
     if (!hasColumn(table, column)) {
@@ -214,6 +215,17 @@ function initSchema() {
       key TEXT PRIMARY KEY,
       value TEXT NOT NULL,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL REFERENCES users(id),
+      type TEXT NOT NULL,
+      title TEXT NOT NULL,
+      message TEXT,
+      link TEXT,
+      is_read INTEGER DEFAULT 0,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `);
 

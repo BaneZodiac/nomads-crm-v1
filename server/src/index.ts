@@ -18,6 +18,7 @@ import dashboardRoutes from './routes/dashboard';
 import settingsRoutes from './routes/settings';
 import usersRoutes from './routes/users';
 import tenantsRoutes from './routes/tenants';
+import notificationRoutes from './routes/notifications';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -42,6 +43,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/tenants', tenantsRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/expenses', expenseRoutes);
 
 app.get('/api/health', (_req, res) => {

@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import { v4 as uuid } from 'uuid';
 import { getDb } from '../database';
 import { authenticate, AuthRequest, tenantScope } from '../middleware/auth';
+import { createNotification } from './notifications';
 
 const router = Router();
 router.use(authenticate);
@@ -70,8 +71,18 @@ router.patch('/:id/stage', (req: AuthRequest, res: Response) => {
   const db = getDb();
   const scope = tenantScope(req);
   const { stage } = req.body;
+  const old = db.prepare(`SELECT * FROM deals WHERE id = ?${scope.filter}`).get(req.params.id, ...scope.params) as any;
   db.prepare(`UPDATE deals SET stage = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?${scope.filter}`).run(stage, req.params.id, ...scope.params);
   const deal = db.prepare(`SELECT d.*, c.name as contact_name, comp.name as company_name FROM deals d LEFT JOIN contacts c ON d.contact_id = c.id LEFT JOIN companies comp ON d.company_id = comp.id WHERE d.id = ?`).get(req.params.id);
+  if (old && old.stage !== stage) {
+    const significantStages: Record<string, string> = { closed_won: 'won', negotiation: 'in negotiation', qualified: 'qualified' };
+    const label = significantStages[stage];
+    if (label) {
+      const ownerId = (deal as any).owner_id;
+      const notifyUserId = (ownerId && ownerId !== req.user!.id) ? ownerId : req.user!.id;
+      createNotification(notifyUserId, 'deal_stage', `Deal ${label}: ${(deal as any).title}`, `Moved to "${stage}" stage`, `/deals`, req.user!.tenant_id || undefined);
+    }
+  }
   res.json(deal);
 });
 

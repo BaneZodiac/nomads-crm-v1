@@ -3,24 +3,26 @@ import { v4 as uuid } from 'uuid';
 import { getDb } from '../database';
 import { authenticate, AuthRequest, tenantScope } from '../middleware/auth';
 
-function computeLeadScore(contact: any, db: any): number {
-  let score = 0;
-  if (contact.email) score += 10;
-  if (contact.phone) score += 10;
-  if (contact.company_id) score += 15;
-  if (contact.job_title) score += 5;
-  if (contact.source) score += 5;
-  if (contact.status === 'active') score += 10;
+function computeLeadScore(contact: any, db: any): { score: number; factors: { label: string; points: number }[] } {
+  const factors: { label: string; points: number }[] = [];
+  if (contact.email) { factors.push({ label: 'Email on file', points: 10 }); }
+  if (contact.phone) { factors.push({ label: 'Phone on file', points: 10 }); }
+  if (contact.company_id) { factors.push({ label: 'Linked to company', points: 15 }); }
+  if (contact.job_title) { factors.push({ label: 'Job title on file', points: 5 }); }
+  if (contact.source) { factors.push({ label: 'Source on file', points: 5 }); }
+  if (contact.status === 'active') { factors.push({ label: 'Active status', points: 10 }); }
   const dealCount = (db.prepare('SELECT COUNT(*) as c FROM deals WHERE contact_id = ?').get(contact.id) as any).c;
-  score += dealCount * 10;
+  if (dealCount > 0) { factors.push({ label: `${dealCount} deal${dealCount > 1 ? 's' : ''}`, points: dealCount * 10 }); }
   const activityCount = (db.prepare('SELECT COUNT(*) as c FROM activities WHERE contact_id = ?').get(contact.id) as any).c;
-  score += activityCount * 5;
-  return Math.min(score, 100);
+  if (activityCount > 0) { factors.push({ label: `${activityCount} activit${activityCount > 1 ? 'ies' : 'y'}`, points: activityCount * 5 }); }
+  const total = Math.min(factors.reduce((s, f) => s + f.points, 0), 100);
+  return { score: total, factors };
 }
 
 function enrichContact(contact: any, db: any) {
   if (!contact) return contact;
-  return { ...contact, lead_score: computeLeadScore(contact, db) };
+  const scoring = computeLeadScore(contact, db);
+  return { ...contact, lead_score: scoring.score, lead_factors: scoring.factors };
 }
 
 const router = Router();
