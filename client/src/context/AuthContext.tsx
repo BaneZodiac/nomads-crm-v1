@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { User } from '../types'
-import { apiUrl } from '../api'
+import { apiUrl, fetchWithRetry } from '../api'
 
 interface AuthContextType {
   user: User | null
@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (token) {
-      fetch(apiUrl('/api/auth/me'), { headers: { Authorization: `Bearer ${token}` } })
+      fetchWithRetry(apiUrl('/api/auth/me'), { headers: { Authorization: `Bearer ${token}` } })
         .then(r => r.ok ? r.json() : Promise.reject())
         .then(u => { setUser(u); setLoading(false) })
         .catch(() => { localStorage.removeItem('token'); setToken(null); setLoading(false) })
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [token])
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(apiUrl('/api/auth/login'), {
+    const res = await fetchWithRetry(apiUrl('/api/auth/login'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (name: string, email: string, password: string) => {
-    const res = await fetch(apiUrl('/api/auth/register'), {
+    const res = await fetchWithRetry(apiUrl('/api/auth/register'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name, email, password }),

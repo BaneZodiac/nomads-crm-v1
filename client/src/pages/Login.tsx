@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { Compass } from 'lucide-react'
 
@@ -10,6 +10,15 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [waitingLong, setWaitingLong] = useState(false)
+
+  useEffect(() => {
+    if (loading) {
+      const t = setTimeout(() => setWaitingLong(true), 8000)
+      return () => clearTimeout(t)
+    }
+    setWaitingLong(false)
+  }, [loading])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -87,8 +96,13 @@ export default function Login() {
               />
             </div>
             <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
-              {loading ? 'Please wait...' : isRegister ? 'Create Account' : 'Sign In'}
+              {loading ? (waitingLong ? 'Waking server... (30-60s)' : 'Please wait...') : isRegister ? 'Create Account' : 'Sign In'}
             </button>
+            {waitingLong && (
+              <p className="text-xs text-brand-500 text-center mt-2">
+                Server is starting up, this may take ~60 seconds on first visit
+              </p>
+            )}
           </form>
 
           <div className="mt-6 text-center">

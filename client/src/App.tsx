@@ -9,14 +9,18 @@ import Companies from './pages/Companies'
 import Deals from './pages/Deals'
 import Activities from './pages/Activities'
 import Notes from './pages/Notes'
+import { Compass } from 'lucide-react'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth()
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-4 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
-        <p className="text-sm text-gray-400">Loading...</p>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-brand-50 via-white to-brand-100">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-200">
+          <Compass size={30} className="text-white" />
+        </div>
+        <div className="w-8 h-8 border-3 border-brand-200 border-t-brand-500 rounded-full animate-spin" />
+        <p className="text-sm text-gray-400">Connecting to server...</p>
       </div>
     </div>
   )
