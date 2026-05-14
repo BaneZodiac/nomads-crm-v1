@@ -1,0 +1,8 @@
+Nomads Cipher CRM Server running on http://localhost:3001
+[0mGET /api/health [32m200[0m 3.034 ms - 54[0m
+[0mGET /api/health [32m200[0m 7.920 ms - 54[0m
+[0mGET /api/health [32m200[0m 0.981 ms - 54[0m
+[0mPOST /api/auth/login [32m200[0m 241.459 ms - 424[0m
+[0mGET /api/dashboard [32m200[0m 3.092 ms - 3477[0m
+[0mGET /api/contacts [32m200[0m 1.294 ms - 1103[0m
+[0mGET /api/deals [32m200[0m 1.384 ms - 1487[0m

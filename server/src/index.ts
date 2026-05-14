@@ -1,0 +1,39 @@
+import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
+import path from 'path';
+import fs from 'fs';
+
+import authRoutes from './routes/auth';
+import contactRoutes from './routes/contacts';
+import companyRoutes from './routes/companies';
+import dealRoutes from './routes/deals';
+import activityRoutes from './routes/activities';
+import noteRoutes from './routes/notes';
+import dashboardRoutes from './routes/dashboard';
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+const dataDir = path.join(__dirname, '..', 'data');
+if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+
+app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactRoutes);
+app.use('/api/companies', companyRoutes);
+app.use('/api/deals', dealRoutes);
+app.use('/api/activities', activityRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/dashboard', dashboardRoutes);
+
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+app.listen(PORT, () => {
+  console.log(`Nomads Cipher CRM Server running on http://localhost:${PORT}`);
+});

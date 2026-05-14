@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: nomads-crm-api
+    env: node
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm run seed && node dist/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
