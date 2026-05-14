@@ -4,11 +4,9 @@ export function useMenuClose(menuOpen: string | null, setMenuOpen: (v: string | 
   useEffect(() => {
     if (!menuOpen) return
     const close = () => setMenuOpen(null)
-    document.addEventListener('mousedown', close)
-    document.addEventListener('touchstart', close)
+    document.addEventListener('click', close)
     return () => {
-      document.removeEventListener('mousedown', close)
-      document.removeEventListener('touchstart', close)
+      document.removeEventListener('click', close)
     }
   }, [menuOpen, setMenuOpen])
 }

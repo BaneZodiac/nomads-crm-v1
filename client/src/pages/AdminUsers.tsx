@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
-import { useMenuClose } from '../hooks/useClickOutside'
+import ActionMenu from '../components/ActionMenu'
 import { apiUrl } from '../api'
 import { Plus, Trash2, Shield, UserCog, MoreHorizontal, Crown } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -27,7 +27,6 @@ export default function AdminUsers() {
   const [deleting, setDeleting] = useState<AppUser | null>(null)
   const [form, setForm] = useState({ name: '', email: '', password: '', role: 'user', tenant_id: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
-  useMenuClose(menuOpen, setMenuOpen)
   const isSuper = currentUser?.role === 'super_admin'
   const isTenantAdmin = currentUser?.is_tenant_admin
 
@@ -138,23 +137,21 @@ export default function AdminUsers() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === u.id ? null : u.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      {menuOpen === u.id && (
-                        <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-44 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                          {isSuper && !u.is_tenant_admin && (
-                            <button onClick={() => { toggleTenantAdmin(u.id, 1); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              <Shield size={14} /> Make Tenant Admin
-                            </button>
-                          )}
-                          {isSuper && u.is_tenant_admin && (
-                            <button onClick={() => { toggleTenantAdmin(u.id, 0); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                              <UserCog size={14} /> Remove Admin
-                            </button>
-                          )}
-                          <button onClick={() => { setDeleting(u); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                            <Trash2 size={14} /> Remove
+                      <ActionMenu open={menuOpen === u.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-44">
+                        {isSuper && !u.is_tenant_admin && (
+                          <button onClick={() => { toggleTenantAdmin(u.id, 1); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <Shield size={14} /> Make Tenant Admin
                           </button>
-                        </div>
-                      )}
+                        )}
+                        {isSuper && u.is_tenant_admin && (
+                          <button onClick={() => { toggleTenantAdmin(u.id, 0); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                            <UserCog size={14} /> Remove Admin
+                          </button>
+                        )}
+                        <button onClick={() => { setDeleting(u); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <Trash2 size={14} /> Remove
+                        </button>
+                      </ActionMenu>
                     </>
                   )}
                 </td>

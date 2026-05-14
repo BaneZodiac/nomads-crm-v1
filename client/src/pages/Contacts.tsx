@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
-import { useMenuClose } from '../hooks/useClickOutside'
+import ActionMenu from '../components/ActionMenu'
 import { Plus, Search, Mail, Phone, MoreHorizontal, Edit2, Trash2, ExternalLink } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -16,7 +16,6 @@ export default function Contacts() {
   const [deleting, setDeleting] = useState<Contact | null>(null)
   const [form, setForm] = useState({ name: '', email: '', phone: '', job_title: '', company_id: '', status: 'active', notes: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
-  useMenuClose(menuOpen, setMenuOpen)
 
   useEffect(() => { fetchContacts(); fetchCompanies() }, [])
 
@@ -123,16 +122,14 @@ export default function Contacts() {
                   <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === c.id ? null : c.id) }} className="p-1 hover:bg-gray-100 rounded">
                     <MoreHorizontal size={16} className="text-gray-400" />
                   </button>
-                  {menuOpen === c.id && (
-                    <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                      <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Edit2 size={14} /> Edit
-                      </button>
-                      <button onClick={() => { setDeleting(c); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                        <Trash2 size={14} /> Delete
-                      </button>
-                    </div>
-                  )}
+                  <ActionMenu open={menuOpen === c.id} onClose={() => setMenuOpen(null)}>
+                    <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      <Edit2 size={14} /> Edit
+                    </button>
+                    <button onClick={() => { setDeleting(c); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  </ActionMenu>
                 </td>
               </tr>
             ))}

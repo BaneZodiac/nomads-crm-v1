@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
-import { useMenuClose } from '../hooks/useClickOutside'
+import ActionMenu from '../components/ActionMenu'
 import { Plus, MoreHorizontal, Edit2, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -13,7 +13,6 @@ export default function Activities() {
   const [editing, setEditing] = useState<Activity | null>(null)
   const [deleting, setDeleting] = useState<Activity | null>(null)
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
-  useMenuClose(menuOpen, setMenuOpen)
   const [filter, setFilter] = useState('all')
   const [form, setForm] = useState({ type: 'task', subject: '', description: '', status: 'pending', priority: 'medium', due_date: '', contact_id: '', company_id: '' })
 
@@ -101,19 +100,17 @@ export default function Activities() {
                   <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === a.id ? null : a.id) }} className="p-1 hover:bg-gray-100 rounded">
                     <MoreHorizontal size={16} className="text-gray-400" />
                   </button>
-                  {menuOpen === a.id && (
-                    <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                      <button onClick={() => { openEdit(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                        <Edit2 size={14} /> Edit
-                      </button>
-                      <button onClick={() => { toggleStatus(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-600 hover:bg-green-50">
-                        <CheckCircle size={14} /> Complete
-                      </button>
-                      <button onClick={() => { setDeleting(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                        <Trash2 size={14} /> Delete
-                      </button>
-                    </div>
-                  )}
+                  <ActionMenu open={menuOpen === a.id} onClose={() => setMenuOpen(null)}>
+                    <button onClick={() => { openEdit(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                      <Edit2 size={14} /> Edit
+                    </button>
+                    <button onClick={() => { toggleStatus(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-600 hover:bg-green-50">
+                      <CheckCircle size={14} /> Complete
+                    </button>
+                    <button onClick={() => { setDeleting(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                      <Trash2 size={14} /> Delete
+                    </button>
+                  </ActionMenu>
                 </td>
               </tr>
             ))}

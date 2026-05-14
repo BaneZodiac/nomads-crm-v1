@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import { useSettings } from '../context/SettingsContext'
-import { useMenuClose } from '../hooks/useClickOutside'
+import ActionMenu from '../components/ActionMenu'
 import { Plus, Search, DollarSign, MoreHorizontal, Edit2, Trash2, Eye } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -20,7 +20,6 @@ export default function Quotes() {
   const [deleting, setDeleting] = useState<Quote | null>(null)
   const [form, setForm] = useState({ title: '', value: 0, contact_id: '', company_id: '', notes: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
-  useMenuClose(menuOpen, setMenuOpen)
 
   const headers = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
   const api = (url: string, opts?: any) => fetch(apiUrl(url), { headers: headers(), ...opts }).then(r => r.json())
@@ -81,12 +80,10 @@ export default function Quotes() {
                   <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === q.id ? null : q.id) }} className="p-1 hover:bg-gray-100 rounded">
                     <MoreHorizontal size={16} className="text-gray-400" />
                   </button>
-                  {menuOpen === q.id && (
-                    <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                      <button onClick={() => openEdit(q)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Edit2 size={14} /> Edit</button>
-                      <button onClick={() => { setDeleting(q); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"><Trash2 size={14} /> Delete</button>
-                    </div>
-                  )}
+                  <ActionMenu open={menuOpen === q.id} onClose={() => setMenuOpen(null)}>
+                    <button onClick={() => openEdit(q)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50"><Edit2 size={14} /> Edit</button>
+                    <button onClick={() => { setDeleting(q); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50"><Trash2 size={14} /> Delete</button>
+                  </ActionMenu>
                 </td>
               </tr>
             ))}

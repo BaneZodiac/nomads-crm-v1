@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
-import { useMenuClose } from '../hooks/useClickOutside'
+import ActionMenu from '../components/ActionMenu'
 import { apiUrl } from '../api'
 import { Plus, Edit2, Trash2, MoreHorizontal, Receipt, TrendingDown, DollarSign, Wallet } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -27,7 +27,6 @@ export default function Finance() {
   const [invoiceForm, setInvoiceForm] = useState({ amount: 0, issue_date: '', due_date: '', notes: '' })
   const [expenseForm, setExpenseForm] = useState({ title: '', amount: 0, category: 'other', expense_date: '', description: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
-  useMenuClose(menuOpen, setMenuOpen)
   const [stats, setStats] = useState({ totalInvoiced: 0, totalExpenses: 0, pendingInvoices: 0, paidInvoices: 0 })
 
   const headers = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
@@ -240,21 +239,19 @@ export default function Finance() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === inv.id ? null : inv.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      {menuOpen === inv.id && (
-                        <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                          <button onClick={() => { openInvoiceModal(inv); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            <Edit2 size={14} /> Edit
+                      <ActionMenu open={menuOpen === inv.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-40">
+                        <button onClick={() => { openInvoiceModal(inv); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                          <Edit2 size={14} /> Edit
+                        </button>
+                        {inv.status !== 'paid' && (
+                          <button onClick={() => { updateInvoiceStatus(inv.id, 'paid'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-600 hover:bg-green-50">
+                            <DollarSign size={14} /> Mark Paid
                           </button>
-                          {inv.status !== 'paid' && (
-                            <button onClick={() => { updateInvoiceStatus(inv.id, 'paid'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-green-600 hover:bg-green-50">
-                              <DollarSign size={14} /> Mark Paid
-                            </button>
-                          )}
-                          <button onClick={() => { setDeleting(inv); setDeleteType('invoice'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                            <Trash2 size={14} /> Delete
-                          </button>
-                        </div>
-                      )}
+                        )}
+                        <button onClick={() => { setDeleting(inv); setDeleteType('invoice'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </ActionMenu>
                     </td>
                   </tr>
                 ))}
@@ -297,16 +294,14 @@ export default function Finance() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === exp.id ? null : exp.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      {menuOpen === exp.id && (
-                        <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
-                          <button onClick={() => { openExpenseModal(exp); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-                            <Edit2 size={14} /> Edit
-                          </button>
-                          <button onClick={() => { setDeleting(exp); setDeleteType('expense'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
-                            <Trash2 size={14} /> Delete
-                          </button>
-                        </div>
-                      )}
+                      <ActionMenu open={menuOpen === exp.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-36">
+                        <button onClick={() => { openExpenseModal(exp); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                          <Edit2 size={14} /> Edit
+                        </button>
+                        <button onClick={() => { setDeleting(exp); setDeleteType('expense'); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50">
+                          <Trash2 size={14} /> Delete
+                        </button>
+                      </ActionMenu>
                     </td>
                   </tr>
                 ))}
