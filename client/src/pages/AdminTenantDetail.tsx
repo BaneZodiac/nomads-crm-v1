@@ -12,6 +12,7 @@ const ALL_MODULES = [
   { key: 'activities', label: 'Activities' },
   { key: 'notes', label: 'Notes' },
   { key: 'quotes', label: 'Quotes' },
+  { key: 'finance', label: 'Finance' },
 ]
 
 export default function AdminTenantDetail() {

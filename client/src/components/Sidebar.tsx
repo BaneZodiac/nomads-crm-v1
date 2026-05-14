@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield, Building, UserCog } from 'lucide-react'
+import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield, Building, UserCog, Receipt } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 const modules = [
@@ -9,6 +9,7 @@ const modules = [
   { key: 'activities', icon: CalendarCheck, label: 'Activities' },
   { key: 'notes', icon: FileText, label: 'Notes' },
   { key: 'quotes', icon: FileSignature, label: 'Quotes' },
+  { key: 'finance', icon: Receipt, label: 'Finance' },
 ]
 
 export default function Sidebar() {

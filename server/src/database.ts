@@ -35,6 +35,8 @@ function migrate() {
     ['notes', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
     ['comments', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
     ['quotes', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['invoices', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
+    ['expenses', 'tenant_id', 'TEXT REFERENCES tenants(id)'],
   ];
   for (const [table, column, def] of migrations) {
     if (!hasColumn(table, column)) {
@@ -59,7 +61,7 @@ function initSchema() {
       domain TEXT,
       plan TEXT DEFAULT 'free',
       status TEXT DEFAULT 'active',
-      modules TEXT DEFAULT '["contacts","companies","deals","activities","notes","quotes"]',
+      modules TEXT DEFAULT '["contacts","companies","deals","activities","notes","quotes","finance"]',
       settings TEXT DEFAULT '{}',
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -173,6 +175,36 @@ function initSchema() {
       deal_id TEXT REFERENCES deals(id),
       items TEXT DEFAULT '[]',
       notes TEXT,
+      created_by TEXT REFERENCES users(id),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS invoices (
+      id TEXT PRIMARY KEY,
+      invoice_number TEXT NOT NULL,
+      deal_id TEXT REFERENCES deals(id),
+      contact_id TEXT REFERENCES contacts(id),
+      company_id TEXT REFERENCES companies(id),
+      amount REAL DEFAULT 0,
+      status TEXT DEFAULT 'draft',
+      issue_date TEXT,
+      due_date TEXT,
+      paid_date TEXT,
+      notes TEXT,
+      created_by TEXT REFERENCES users(id),
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS expenses (
+      id TEXT PRIMARY KEY,
+      title TEXT NOT NULL,
+      amount REAL DEFAULT 0,
+      category TEXT DEFAULT 'other',
+      expense_date TEXT,
+      description TEXT,
+      deal_id TEXT REFERENCES deals(id),
       created_by TEXT REFERENCES users(id),
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP

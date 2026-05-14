@@ -104,16 +104,79 @@ export interface Note {
   created_at: string
 }
 
+export interface Invoice {
+  id: string
+  invoice_number: string
+  deal_id?: string
+  deal_title?: string
+  contact_id?: string
+  contact_name?: string
+  company_id?: string
+  company_name?: string
+  amount: number
+  status: string
+  issue_date?: string
+  due_date?: string
+  paid_date?: string
+  notes?: string
+  created_by_name?: string
+  created_at: string
+}
+
+export interface Expense {
+  id: string
+  title: string
+  amount: number
+  category: string
+  expense_date?: string
+  description?: string
+  deal_id?: string
+  deal_title?: string
+  created_by_name?: string
+  created_at: string
+}
+
+export const INVOICE_STATUSES: Record<string, string> = {
+  draft: 'Draft',
+  sent: 'Sent',
+  paid: 'Paid',
+  overdue: 'Overdue',
+  cancelled: 'Cancelled',
+}
+
+export const INVOICE_STATUS_COLORS: Record<string, string> = {
+  draft: 'badge-gray',
+  sent: 'badge-blue',
+  paid: 'badge-green',
+  overdue: 'badge-red',
+  cancelled: 'badge-gray',
+}
+
+export const EXPENSE_CATEGORIES: Record<string, string> = {
+  office: 'Office',
+  travel: 'Travel',
+  software: 'Software',
+  marketing: 'Marketing',
+  salary: 'Salary',
+  utilities: 'Utilities',
+  professional: 'Professional Services',
+  other: 'Other',
+}
+
 export interface DashboardData {
   totalContacts: number
   totalCompanies: number
   totalDeals: number
   totalRevenue: number
   pipelineValue: number
+  totalInvoiced: number
+  totalExpenses: number
   dealsByStage: { stage: string; count: number; value: number }[]
   recentActivities: Activity[]
   upcomingActivities: Activity[]
   topContacts: Contact[]
+  invoicesByStatus: { status: string; count: number; value: number }[]
+  expensesByCategory: { category: string; total: number }[]
   alerts: {
     staleDeals: Deal[]
     hotLeads: Deal[]

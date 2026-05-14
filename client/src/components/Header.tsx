@@ -9,6 +9,7 @@ const pageTitles: Record<string, string> = {
   '/deals': 'Deals Pipeline',
   '/activities': 'Activities',
   '/notes': 'Notes',
+  '/finance': 'Finance',
 }
 
 export default function Header() {

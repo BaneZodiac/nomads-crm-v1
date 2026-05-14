@@ -12,6 +12,8 @@ import activityRoutes from './routes/activities';
 import noteRoutes from './routes/notes';
 import commentRoutes from './routes/comments';
 import quoteRoutes from './routes/quotes';
+import invoiceRoutes from './routes/invoices';
+import expenseRoutes from './routes/expenses';
 import dashboardRoutes from './routes/dashboard';
 import settingsRoutes from './routes/settings';
 import usersRoutes from './routes/users';
@@ -39,6 +41,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/users', usersRoutes);
 app.use('/api/tenants', tenantsRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/expenses', expenseRoutes);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

@@ -14,6 +14,10 @@ router.get('/', (req: AuthRequest, res: Response) => {
   const totalDeals = (db.prepare(`SELECT COUNT(*) as count FROM deals WHERE 1=1${scope.filter}`).get(...scope.params) as any).count;
   const totalRevenue = (db.prepare(`SELECT COALESCE(SUM(value), 0) as total FROM deals WHERE stage = 'closed_won'${scope.filter}`).get(...scope.params) as any).total;
   const pipelineValue = (db.prepare(`SELECT COALESCE(SUM(value), 0) as total FROM deals WHERE stage NOT IN ('closed_won','closed_lost')${scope.filter}`).get(...scope.params) as any).total;
+  const totalInvoiced = (db.prepare(`SELECT COALESCE(SUM(amount), 0) as total FROM invoices WHERE status NOT IN ('cancelled')${scope.filter}`).get(...scope.params) as any).total;
+  const totalExpenses = (db.prepare(`SELECT COALESCE(SUM(amount), 0) as total FROM expenses WHERE 1=1${scope.filter}`).get(...scope.params) as any).total;
+  const invoicesByStatus = db.prepare(`SELECT status, COUNT(*) as count, COALESCE(SUM(amount), 0) as value FROM invoices WHERE 1=1${scope.filter} GROUP BY status`).all(...scope.params);
+  const expensesByCategory = db.prepare(`SELECT category, COALESCE(SUM(amount), 0) as total FROM expenses WHERE 1=1${scope.filter} GROUP BY category`).all(...scope.params);
 
   const dealsByStage = db.prepare(`SELECT stage, COUNT(*) as count, COALESCE(SUM(value), 0) as value FROM deals WHERE 1=1${scope.filter} GROUP BY stage`).all(...scope.params);
   const recentActivities = db.prepare(`SELECT a.*, u.name as assigned_name FROM activities a LEFT JOIN users u ON a.assigned_to = u.id WHERE 1=1${scope.filter} ORDER BY a.created_at DESC LIMIT 5`).all(...scope.params);
@@ -45,10 +49,14 @@ router.get('/', (req: AuthRequest, res: Response) => {
     totalDeals,
     totalRevenue,
     pipelineValue,
+    totalInvoiced,
+    totalExpenses,
     dealsByStage,
     recentActivities,
     upcomingActivities,
     topContacts,
+    invoicesByStatus,
+    expensesByCategory,
     alerts: { staleDeals, hotLeads, overdueActivities },
   });
 });

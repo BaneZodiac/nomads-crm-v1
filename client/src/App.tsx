@@ -11,6 +11,7 @@ import Activities from './pages/Activities'
 import Notes from './pages/Notes'
 import ContactDetail from './pages/ContactDetail'
 import Quotes from './pages/Quotes'
+import Finance from './pages/Finance'
 import AdminSettings from './pages/AdminSettings'
 import AdminUsers from './pages/AdminUsers'
 import AdminTenants from './pages/AdminTenants'
@@ -50,6 +51,7 @@ export default function App() {
                 <Route path="/activities" element={<Activities />} />
                 <Route path="/notes" element={<Notes />} />
                 <Route path="/quotes" element={<Quotes />} />
+                <Route path="/finance" element={<Finance />} />
                 <Route path="/contacts/:id" element={<ContactDetail />} />
                 <Route path="/admin/settings" element={<AdminSettings />} />
                 <Route path="/admin/users" element={<AdminUsers />} />

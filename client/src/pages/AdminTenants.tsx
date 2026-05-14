@@ -7,7 +7,7 @@ import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
 import { Tenant } from '../types'
 
-const MODULES = ['contacts', 'companies', 'deals', 'activities', 'notes', 'quotes']
+const MODULES = ['contacts', 'companies', 'deals', 'activities', 'notes', 'quotes', 'finance']
 
 export default function AdminTenants() {
   const { token } = useAuth()

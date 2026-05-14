@@ -50,5 +50,15 @@ db.prepare(`INSERT OR IGNORE INTO activities (id, type, subject, description, st
 db.prepare(`INSERT OR IGNORE INTO activities (id, type, subject, description, status, priority, due_date, contact_id, company_id, assigned_to, tenant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
   .run(uuid(), 'meeting', 'Product demo', 'Demo new features to GreenLeaf team', 'scheduled', 'medium', new Date(Date.now() + 86400000 * 5).toISOString(), contact3, company2, adminId, tenantId);
 
+db.prepare(`INSERT OR IGNORE INTO invoices (id, invoice_number, contact_id, company_id, amount, status, issue_date, due_date, created_by, tenant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  .run(uuid(), 'INV-00001', contact1, company1, 50000, 'sent', '2026-05-01', '2026-06-01', adminId, tenantId);
+db.prepare(`INSERT OR IGNORE INTO invoices (id, invoice_number, contact_id, company_id, amount, status, issue_date, due_date, created_by, tenant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  .run(uuid(), 'INV-00002', contact3, company2, 15000, 'draft', '2026-05-10', '2026-06-10', adminId, tenantId);
+
+db.prepare(`INSERT OR IGNORE INTO expenses (id, title, amount, category, expense_date, description, created_by, tenant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+  .run(uuid(), 'Office Rent', 3000, 'office', '2026-05-01', 'Monthly office rent', adminId, tenantId);
+db.prepare(`INSERT OR IGNORE INTO expenses (id, title, amount, category, expense_date, description, created_by, tenant_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+  .run(uuid(), 'AWS Hosting', 450, 'software', '2026-05-02', 'Cloud hosting services', adminId, tenantId);
+
 console.log('Database seeded successfully!');
 console.log('Super Admin Login: admin@nomadscipher.com / admin123');
