@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, Search, Mail, Phone, MoreHorizontal, Edit2, Trash2, ExternalLink } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -16,6 +17,7 @@ export default function Contacts() {
   const [deleting, setDeleting] = useState<Contact | null>(null)
   const [form, setForm] = useState({ name: '', email: '', phone: '', job_title: '', company_id: '', status: 'active', notes: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
 
   useEffect(() => { fetchContacts(); fetchCompanies() }, [])
 
@@ -122,7 +124,7 @@ export default function Contacts() {
                   <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === c.id ? null : c.id) }} className="p-1 hover:bg-gray-100 rounded">
                     <MoreHorizontal size={16} className="text-gray-400" />
                   </button>
-                  <ActionMenu open={menuOpen === c.id} onClose={() => setMenuOpen(null)}>
+                  <ActionMenu open={menuOpen === c.id}>
                     <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Edit2 size={14} /> Edit
                     </button>

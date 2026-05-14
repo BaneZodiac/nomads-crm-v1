@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { apiUrl } from '../api'
 import { Plus, Trash2, Shield, UserCog, MoreHorizontal, Crown } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -137,7 +138,7 @@ export default function AdminUsers() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === u.id ? null : u.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      <ActionMenu open={menuOpen === u.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-44">
+                      <ActionMenu open={menuOpen === u.id} className="absolute right-0 top-full mt-1 w-44">
                         {isSuper && !u.is_tenant_admin && (
                           <button onClick={() => { toggleTenantAdmin(u.id, 1); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             <Shield size={14} /> Make Tenant Admin

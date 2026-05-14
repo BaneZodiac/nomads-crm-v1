@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, MoreHorizontal, Edit2, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -100,7 +101,7 @@ export default function Activities() {
                   <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === a.id ? null : a.id) }} className="p-1 hover:bg-gray-100 rounded">
                     <MoreHorizontal size={16} className="text-gray-400" />
                   </button>
-                  <ActionMenu open={menuOpen === a.id} onClose={() => setMenuOpen(null)}>
+                  <ActionMenu open={menuOpen === a.id}>
                     <button onClick={() => { openEdit(a); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Edit2 size={14} /> Edit
                     </button>

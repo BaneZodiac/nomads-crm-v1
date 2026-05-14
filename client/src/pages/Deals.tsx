@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import { useSettings } from '../context/SettingsContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, MoreHorizontal, Edit2, Trash2, DollarSign } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -91,7 +92,7 @@ export default function Deals() {
                       <MoreHorizontal size={14} className="text-gray-400" />
                     </button>
                   </div>
-                  <ActionMenu open={menuOpen === deal.id} onClose={() => setMenuOpen(null)}>
+                  <ActionMenu open={menuOpen === deal.id}>
                     <button onClick={() => openEdit(deal)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                       <Edit2 size={14} /> Edit
                     </button>

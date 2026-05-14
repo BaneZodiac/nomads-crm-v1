@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { apiUrl } from '../api'
 import { Plus, Edit2, Trash2, MoreHorizontal, Receipt, TrendingDown, DollarSign, Wallet } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -239,7 +240,7 @@ export default function Finance() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === inv.id ? null : inv.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      <ActionMenu open={menuOpen === inv.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-40">
+                      <ActionMenu open={menuOpen === inv.id} className="absolute right-0 top-full mt-1 w-40">
                         <button onClick={() => { openInvoiceModal(inv); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                           <Edit2 size={14} /> Edit
                         </button>
@@ -294,7 +295,7 @@ export default function Finance() {
                       <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === exp.id ? null : exp.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
-                      <ActionMenu open={menuOpen === exp.id} onClose={() => setMenuOpen(null)} className="absolute right-0 top-full mt-1 w-36">
+                      <ActionMenu open={menuOpen === exp.id} className="absolute right-0 top-full mt-1 w-36">
                         <button onClick={() => { openExpenseModal(exp); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                           <Edit2 size={14} /> Edit
                         </button>

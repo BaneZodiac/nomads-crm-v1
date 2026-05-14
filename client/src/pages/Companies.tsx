@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import ActionMenu from '../components/ActionMenu'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, Search, MoreHorizontal, Edit2, Trash2, Globe, MapPin } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -14,6 +15,7 @@ export default function Companies() {
   const [deleting, setDeleting] = useState<Company | null>(null)
   const [form, setForm] = useState({ name: '', domain: '', industry: '', size: '', city: '', country: '', website: '', notes: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
 
   useEffect(() => { fetchCompanies() }, [])
 
@@ -69,7 +71,7 @@ export default function Companies() {
                 <MoreHorizontal size={16} className="text-gray-400" />
               </button>
             </div>
-            <ActionMenu open={menuOpen === c.id} onClose={() => setMenuOpen(null)} className="absolute right-5 top-14 w-36">
+            <ActionMenu open={menuOpen === c.id} className="absolute right-5 top-14 w-36">
               <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                 <Edit2 size={14} /> Edit
               </button>
