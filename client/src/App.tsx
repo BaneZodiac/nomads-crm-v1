@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
 import { SettingsProvider } from './context/SettingsContext'
+import { I18nProvider } from './context/I18nContext'
 import { NotificationProvider } from './context/NotificationContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -44,6 +45,7 @@ export default function App() {
       <Route path="/*" element={
         <ProtectedRoute>
           <SettingsProvider>
+          <I18nProvider>
           <DataProvider>
           <NotificationProvider>
             <Layout>
@@ -66,6 +68,7 @@ export default function App() {
             </Layout>
           </NotificationProvider>
           </DataProvider>
+          </I18nProvider>
           </SettingsProvider>
         </ProtectedRoute>
       } />

@@ -1,26 +1,28 @@
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield, Building, UserCog, Receipt } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useI18n } from '../context/I18nContext'
 
 const modules = [
-  { key: 'contacts', icon: Users, label: 'Contacts' },
-  { key: 'companies', icon: Building2, label: 'Companies' },
-  { key: 'deals', icon: TrendingUp, label: 'Deals' },
-  { key: 'activities', icon: CalendarCheck, label: 'Activities' },
-  { key: 'notes', icon: FileText, label: 'Notes' },
-  { key: 'quotes', icon: FileSignature, label: 'Quotes' },
-  { key: 'finance', icon: Receipt, label: 'Finance' },
+  { key: 'contacts', icon: Users },
+  { key: 'companies', icon: Building2 },
+  { key: 'deals', icon: TrendingUp },
+  { key: 'activities', icon: CalendarCheck },
+  { key: 'notes', icon: FileText },
+  { key: 'quotes', icon: FileSignature },
+  { key: 'finance', icon: Receipt },
 ]
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
+  const { t } = useI18n()
   const isSuper = user?.role === 'super_admin'
   const isTenantAdmin = user?.is_tenant_admin
   const enabledModules = user?.modules || modules.map(m => m.key)
 
   const mainItems = modules
     .filter(m => isSuper || enabledModules.includes(m.key))
-    .map(m => ({ to: `/${m.key}`, icon: m.icon, label: m.label }))
+    .map(m => ({ to: `/${m.key}`, icon: m.icon, label: t(`nav.${m.key}`) }))
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-gray-100 flex flex-col z-40">
@@ -30,8 +32,8 @@ export default function Sidebar() {
             <Compass size={22} className="text-white" />
           </div>
           <div>
-            <h1 className="text-lg font-bold text-gray-900 leading-tight">Nomads Cipher</h1>
-            <p className="text-xs text-gray-400">CRM Platform</p>
+            <h1 className="text-lg font-bold text-gray-900 leading-tight">{t('app.name')}</h1>
+            <p className="text-xs text-gray-400">{t('app.platform')}</p>
           </div>
         </div>
       </div>
@@ -49,7 +51,7 @@ export default function Sidebar() {
           }
         >
           <LayoutDashboard size={20} />
-          Dashboard
+          {t('nav.dashboard')}
         </NavLink>
 
         {mainItems.map(item => (
@@ -71,7 +73,7 @@ export default function Sidebar() {
 
         <div className="pt-4 pb-2">
           <div className="border-t border-gray-100" />
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1 px-3">Administration</p>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1 px-3">{t('nav.administration')}</p>
         </div>
 
         {isSuper && (
@@ -86,7 +88,7 @@ export default function Sidebar() {
             }
           >
             <Building size={20} />
-            Tenants
+            {t('nav.tenants')}
           </NavLink>
         )}
 
@@ -101,7 +103,7 @@ export default function Sidebar() {
           }
         >
           <UserCog size={20} />
-          Users
+          {t('nav.users')}
         </NavLink>
 
         {isSuper && (
@@ -116,7 +118,7 @@ export default function Sidebar() {
             }
           >
             <Settings size={20} />
-            Settings
+            {t('nav.settings')}
           </NavLink>
         )}
       </nav>
@@ -139,7 +141,7 @@ export default function Sidebar() {
           className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
         >
           <LogOut size={20} />
-          Sign Out
+          {t('nav.sign_out')}
         </button>
       </div>
     </aside>

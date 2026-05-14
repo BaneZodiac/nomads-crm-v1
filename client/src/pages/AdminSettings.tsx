@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
+import { useI18n } from '../context/I18nContext'
 import { apiUrl } from '../api'
 import { Save, Globe, DollarSign, Clock, CalendarDays, Building2, Languages, Sun } from 'lucide-react'
 
@@ -25,6 +26,7 @@ const currencies = [
 export default function AdminSettings() {
   const { token } = useAuth()
   const { refreshSettings } = useSettings()
+  const { t } = useI18n()
   const [settings, setSettings] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -66,7 +68,7 @@ export default function AdminSettings() {
 
       {saved && (
         <div className="mb-6 p-3 bg-green-50 border border-green-100 rounded-lg text-sm text-green-700">
-          Settings saved successfully
+          {t('admin.settings.saved')}
         </div>
       )}
 
