@@ -4,10 +4,10 @@ export function apiUrl(path: string): string {
   return `${API_BASE}${path}`
 }
 
-export async function fetchWithRetry(url: string, options?: RequestInit, retries = 3, delay = 2000): Promise<Response> {
+export async function fetchWithRetry(url: string, options?: RequestInit, retries = 2, delay = 2000): Promise<Response> {
   for (let i = 0; i < retries; i++) {
     const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 30000)
+    const timeout = setTimeout(() => controller.abort(), 70000)
     try {
       const res = await fetch(url, { ...options, signal: controller.signal })
       clearTimeout(timeout)
