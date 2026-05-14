@@ -58,7 +58,7 @@ export default function Header() {
             )}
           </button>
           {menuOpen && (
-            <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
+            <div onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
               <div className="flex items-center justify-between px-4 py-2 border-b border-gray-50">
                 <p className="text-sm font-semibold text-gray-900">Notifications</p>
                 {unreadCount > 0 && (
