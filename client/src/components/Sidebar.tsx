@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, Users, Building2, TrendingUp, CalendarCheck, FileText, LogOut, Compass, FileSignature, Settings, Shield } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
-const navItems = [
+const mainItems = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
   { to: '/contacts', icon: Users, label: 'Contacts' },
   { to: '/companies', icon: Building2, label: 'Companies' },
@@ -10,6 +10,9 @@ const navItems = [
   { to: '/activities', icon: CalendarCheck, label: 'Activities' },
   { to: '/notes', icon: FileText, label: 'Notes' },
   { to: '/quotes', icon: FileSignature, label: 'Quotes' },
+]
+
+const adminItems = [
   { to: '/admin/settings', icon: Settings, label: 'Settings' },
   { to: '/admin/users', icon: Shield, label: 'Users' },
 ]
@@ -31,12 +34,32 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map(item => (
+      <nav className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+        {mainItems.map(item => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === '/'}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                isActive
+                  ? 'bg-brand-50 text-brand-600 border border-brand-100'
+                  : 'text-gray-500 hover:bg-gray-50 hover:text-gray-700'
+              }`
+            }
+          >
+            <item.icon size={20} />
+            {item.label}
+          </NavLink>
+        ))}
+        <div className="pt-4 pb-2">
+          <div className="border-t border-gray-100" />
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mt-3 mb-1 px-3">Administration</p>
+        </div>
+        {adminItems.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
             className={({ isActive }) =>
               `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
                 isActive
