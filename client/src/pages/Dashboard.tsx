@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useData } from '../context/DataContext'
+import { useSettings } from '../context/SettingsContext'
 import { Building2, Users, TrendingUp, DollarSign, Flame, Clock, AlertCircle } from 'lucide-react'
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts'
 import { STAGE_LABELS, ACTIVITY_TYPES } from '../types'
@@ -8,6 +9,7 @@ const COLORS = ['#FB923C', '#F97316', '#FDBA74', '#FED7AA', '#22C55E', '#EF4444'
 
 export default function Dashboard() {
   const { dashboard, fetchDashboard, loading } = useData()
+  const { formatCurrency } = useSettings()
 
   useEffect(() => { fetchDashboard() }, [])
 
@@ -66,7 +68,7 @@ export default function Dashboard() {
           </div>
           <div>
             <p className="text-sm text-gray-400">Revenue (Closed Won)</p>
-            <p className="text-2xl font-bold text-gray-900">${dashboard.totalRevenue.toLocaleString()}</p>
+            <p className="text-2xl font-bold text-gray-900">{formatCurrency(dashboard.totalRevenue)}</p>
           </div>
         </div>
       </div>
@@ -91,7 +93,7 @@ export default function Dashboard() {
                 <h3 className="text-sm font-semibold text-brand-700">Hot Leads</h3>
               </div>
               {dashboard.alerts.hotLeads.slice(0, 3).map((d: any) => (
-                <p key={d.id} className="text-xs text-gray-600 truncate">{d.title} — ${d.value.toLocaleString()}</p>
+                <p key={d.id} className="text-xs text-gray-600 truncate">{d.title} — {formatCurrency(d.value)}</p>
               ))}
             </div>
           )}

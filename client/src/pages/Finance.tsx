@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useSettings } from '../context/SettingsContext'
 import { apiUrl } from '../api'
 import { Plus, Edit2, Trash2, MoreHorizontal, Receipt, TrendingDown, DollarSign, Wallet } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -10,6 +11,7 @@ type Tab = 'overview' | 'invoices' | 'expenses'
 
 export default function Finance() {
   const { token } = useAuth()
+  const { formatCurrency } = useSettings()
   const [tab, setTab] = useState<Tab>('overview')
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [expenses, setExpenses] = useState<Expense[]>([])
@@ -132,14 +134,14 @@ export default function Finance() {
                 <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center"><DollarSign size={20} className="text-green-600" /></div>
                 <p className="text-sm text-gray-400">Total Invoiced</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">${stats.totalInvoiced.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalInvoiced)}</p>
             </div>
             <div className="card p-5">
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center"><TrendingDown size={20} className="text-red-600" /></div>
                 <p className="text-sm text-gray-400">Total Expenses</p>
               </div>
-              <p className="text-2xl font-bold text-gray-900">${stats.totalExpenses.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-gray-900">{formatCurrency(stats.totalExpenses)}</p>
             </div>
             <div className="card p-5">
               <div className="flex items-center gap-3 mb-3">
@@ -147,7 +149,7 @@ export default function Finance() {
                 <p className="text-sm text-gray-400">Net Balance</p>
               </div>
               <p className={`text-2xl font-bold ${netBalance >= 0 ? 'text-gray-900' : 'text-red-600'}`}>
-                ${netBalance.toLocaleString()}
+                {formatCurrency(netBalance)}
               </p>
             </div>
             <div className="card p-5">
@@ -175,7 +177,7 @@ export default function Finance() {
                         <span className={INVOICE_STATUS_COLORS[s.status] || 'badge-gray'}>{INVOICE_STATUSES[s.status] || s.status}</span>
                         <span className="text-sm text-gray-400">({s.count})</span>
                       </div>
-                      <span className="text-sm font-medium text-gray-900">${s.value.toLocaleString()}</span>
+                      <span className="text-sm font-medium text-gray-900">{formatCurrency(s.value)}</span>
                     </div>
                   ))}
                 </div>
@@ -193,7 +195,7 @@ export default function Finance() {
                   }, []).map((s: any) => (
                     <div key={s.category} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                       <span className="text-sm text-gray-700">{EXPENSE_CATEGORIES[s.category] || s.category}</span>
-                      <span className="text-sm font-medium text-gray-900">${s.total.toLocaleString()}</span>
+                      <span className="text-sm font-medium text-gray-900">{formatCurrency(s.total)}</span>
                     </div>
                   ))}
                 </div>
@@ -228,7 +230,7 @@ export default function Finance() {
                 {filteredInvoices.map(inv => (
                   <tr key={inv.id} className="hover:bg-brand-50/30">
                     <td className="table-cell"><span className="font-medium text-gray-900">{inv.invoice_number}</span></td>
-                    <td className="table-cell font-medium text-gray-900">${inv.amount.toLocaleString()}</td>
+                    <td className="table-cell font-medium text-gray-900">{formatCurrency(inv.amount)}</td>
                     <td className="table-cell"><span className={INVOICE_STATUS_COLORS[inv.status]}>{INVOICE_STATUSES[inv.status] || inv.status}</span></td>
                     <td className="table-cell text-gray-500">{inv.issue_date ? new Date(inv.issue_date).toLocaleDateString() : '-'}</td>
                     <td className="table-cell text-gray-500">{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : '-'}</td>
@@ -285,7 +287,7 @@ export default function Finance() {
                 {filteredExpenses.map(exp => (
                   <tr key={exp.id} className="hover:bg-brand-50/30">
                     <td className="table-cell"><span className="font-medium text-gray-900">{exp.title}</span></td>
-                    <td className="table-cell font-medium text-red-600">-${exp.amount.toLocaleString()}</td>
+                    <td className="table-cell font-medium text-red-600">-{formatCurrency(exp.amount)}</td>
                     <td className="table-cell"><span className="badge-gray">{EXPENSE_CATEGORIES[exp.category] || exp.category}</span></td>
                     <td className="table-cell text-gray-500">{exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : '-'}</td>
                     <td className="table-cell text-gray-500 max-w-[200px] truncate">{exp.description || '-'}</td>

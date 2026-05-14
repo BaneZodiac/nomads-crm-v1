@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
+import { useSettings } from '../context/SettingsContext'
 import { Plus, Search, DollarSign, MoreHorizontal, Edit2, Trash2, Eye } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -10,6 +11,7 @@ import { Quote } from '../types'
 export default function Quotes() {
   const { contacts, companies, fetchContacts, fetchCompanies } = useData()
   const { token } = useAuth()
+  const { formatCurrency } = useSettings()
   const [quotes, setQuotes] = useState<Quote[]>([])
   const [search, setSearch] = useState('')
   const [showForm, setShowForm] = useState(false)
@@ -69,7 +71,7 @@ export default function Quotes() {
                 <td className="table-cell font-medium text-gray-900">{q.title}</td>
                 <td className="table-cell">{q.contact_name || '-'}</td>
                 <td className="table-cell">{q.company_name || '-'}</td>
-                <td className="table-cell">${q.value.toLocaleString()}</td>
+                <td className="table-cell">{formatCurrency(q.value)}</td>
                 <td className="table-cell">
                   <span className={q.status === 'approved' ? 'badge-green' : q.status === 'sent' ? 'badge-blue' : 'badge-gray'}>{q.status}</span>
                 </td>

@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import { DataProvider } from './context/DataContext'
+import { SettingsProvider } from './context/SettingsContext'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
@@ -41,6 +42,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/*" element={
         <ProtectedRoute>
+          <SettingsProvider>
           <DataProvider>
             <Layout>
               <Routes>
@@ -61,6 +63,7 @@ export default function App() {
               </Routes>
             </Layout>
           </DataProvider>
+          </SettingsProvider>
         </ProtectedRoute>
       } />
     </Routes>

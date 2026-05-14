@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
+import { useSettings } from '../context/SettingsContext'
 import { Plus, MoreHorizontal, Edit2, Trash2, DollarSign } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -9,6 +10,7 @@ const STAGES = ['lead', 'qualified', 'proposal', 'negotiation', 'closed_won', 'c
 
 export default function Deals() {
   const { deals: allDeals, contacts, companies, fetchDeals, fetchContacts, fetchCompanies, createDeal, updateDeal, updateDealStage, deleteDeal } = useData()
+  const { formatCurrency } = useSettings()
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState<Deal | null>(null)
   const [deleting, setDeleting] = useState<Deal | null>(null)
@@ -55,7 +57,7 @@ export default function Deals() {
     <div>
       <div className="page-header">
         <h3 className="text-lg text-gray-500">
-          Pipeline: <span className="font-semibold text-gray-900">${allDeals.reduce((s, d) => s + d.value, 0).toLocaleString()}</span>
+          Pipeline: <span className="font-semibold text-gray-900">{formatCurrency(allDeals.reduce((s, d) => s + d.value, 0))}</span>
         </h3>
         <button onClick={openCreate} className="btn-primary flex items-center gap-2">
           <Plus size={18} /> Add Deal
@@ -100,7 +102,7 @@ export default function Deals() {
                   )}
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <DollarSign size={14} />
-                    <span className="font-medium text-gray-700">{deal.value.toLocaleString()}</span>
+                    <span className="font-medium text-gray-700">{formatCurrency(deal.value)}</span>
                   </div>
                   {deal.company_name && <p className="text-xs text-gray-400 mt-1">{deal.company_name}</p>}
                   <div className="mt-2 h-1.5 bg-gray-100 rounded-full overflow-hidden">
@@ -127,7 +129,7 @@ export default function Deals() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Value ($)</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Value</label>
               <input type="number" value={form.value} onChange={e => setForm(f => ({ ...f, value: Number(e.target.value) }))} className="input-field" />
             </div>
             <div>

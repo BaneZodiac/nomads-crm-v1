@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useData } from '../context/DataContext'
+import { useSettings } from '../context/SettingsContext'
 import { Contact, Deal, Activity, Note } from '../types'
 import { ArrowLeft, Mail, Phone, Building2, Briefcase, TrendingUp, CalendarCheck, FileText, MessageSquare } from 'lucide-react'
 import Comments from '../components/Comments'
@@ -8,6 +9,7 @@ import Comments from '../components/Comments'
 export default function ContactDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
+  const { formatCurrency } = useSettings()
   const { contacts, fetchContacts, fetchDeals, fetchActivities, fetchNotes, fetchCompanies, companies, deals, activities, notes } = useData()
   const [contact, setContact] = useState<Contact | null>(null)
   const [contactDeals, setContactDeals] = useState<Deal[]>([])
@@ -77,7 +79,7 @@ export default function ContactDetail() {
               <div key={d.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <span className="text-sm font-medium text-gray-900">{d.title}</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-500">${d.value.toLocaleString()}</span>
+                  <span className="text-sm text-gray-500">{formatCurrency(d.value)}</span>
                   <span className={d.stage === 'closed_won' ? 'badge-green' : d.stage === 'closed_lost' ? 'badge-red' : 'badge-blue'}>
                     {d.stage.replace('_', ' ')}
                   </span>
