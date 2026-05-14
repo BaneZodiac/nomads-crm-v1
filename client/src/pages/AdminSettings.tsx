@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { useSettings } from '../context/SettingsContext'
 import { apiUrl } from '../api'
 import { Save, Globe, DollarSign, Clock, CalendarDays, Building2, Languages, Sun } from 'lucide-react'
 
@@ -23,6 +24,7 @@ const currencies = [
 
 export default function AdminSettings() {
   const { token } = useAuth()
+  const { refreshSettings } = useSettings()
   const [settings, setSettings] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -45,6 +47,7 @@ export default function AdminSettings() {
       method: 'PUT', headers: headers(),
       body: JSON.stringify(settings),
     })
+    refreshSettings()
     setSaving(false)
     setSaved(true)
     setTimeout(() => setSaved(false), 3000)

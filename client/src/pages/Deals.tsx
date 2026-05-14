@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
 import { useSettings } from '../context/SettingsContext'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, MoreHorizontal, Edit2, Trash2, DollarSign } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -15,6 +16,7 @@ export default function Deals() {
   const [editing, setEditing] = useState<Deal | null>(null)
   const [deleting, setDeleting] = useState<Deal | null>(null)
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
   const [form, setForm] = useState({ title: '', value: 0, stage: 'lead', probability: 10, contact_id: '', company_id: '', notes: '', expected_close_date: '' })
   const [draggedDeal, setDraggedDeal] = useState<string | null>(null)
 
@@ -86,12 +88,12 @@ export default function Deals() {
                 >
                   <div className="flex items-start justify-between mb-1">
                     <h4 className="text-sm font-medium text-gray-900">{deal.title}</h4>
-                    <button onClick={() => setMenuOpen(menuOpen === deal.id ? null : deal.id)} className="p-0.5 hover:bg-gray-100 rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === deal.id ? null : deal.id) }} className="p-0.5 hover:bg-gray-100 rounded opacity-0 group-hover:opacity-100 transition-opacity">
                       <MoreHorizontal size={14} className="text-gray-400" />
                     </button>
                   </div>
                   {menuOpen === deal.id && (
-                    <div className="absolute right-8 top-0 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
+                    <div onClick={e => e.stopPropagation()} className="absolute right-8 top-0 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
                       <button onClick={() => openEdit(deal)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                         <Edit2 size={14} /> Edit
                       </button>

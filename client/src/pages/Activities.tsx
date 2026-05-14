@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, MoreHorizontal, Edit2, Trash2, CheckCircle, XCircle } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -12,6 +13,7 @@ export default function Activities() {
   const [editing, setEditing] = useState<Activity | null>(null)
   const [deleting, setDeleting] = useState<Activity | null>(null)
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
   const [filter, setFilter] = useState('all')
   const [form, setForm] = useState({ type: 'task', subject: '', description: '', status: 'pending', priority: 'medium', due_date: '', contact_id: '', company_id: '' })
 
@@ -71,7 +73,7 @@ export default function Activities() {
         </button>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="card overflow-x-auto">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -114,11 +116,11 @@ export default function Activities() {
                         {a.status === 'completed' ? <XCircle size={16} className="text-gray-400" /> : <CheckCircle size={16} className="text-green-400" />}
                       </button>
                       <div className="relative">
-                        <button onClick={() => setMenuOpen(menuOpen === a.id ? null : a.id)} className="p-1 hover:bg-gray-100 rounded">
+                        <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === a.id ? null : a.id) }} className="p-1 hover:bg-gray-100 rounded">
                           <MoreHorizontal size={16} className="text-gray-400" />
                         </button>
                         {menuOpen === a.id && (
-                          <div className="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                          <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-32 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
                             <button onClick={() => openEdit(a)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                               <Edit2 size={14} /> Edit
                             </button>

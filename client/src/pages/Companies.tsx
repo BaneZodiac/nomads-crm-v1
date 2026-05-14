@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useData } from '../context/DataContext'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { Plus, Search, MoreHorizontal, Edit2, Trash2, Globe, MapPin } from 'lucide-react'
 import Modal from '../components/Modal'
 import DeleteConfirm from '../components/DeleteConfirm'
@@ -13,6 +14,7 @@ export default function Companies() {
   const [deleting, setDeleting] = useState<Company | null>(null)
   const [form, setForm] = useState({ name: '', domain: '', industry: '', size: '', city: '', country: '', website: '', notes: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
 
   useEffect(() => { fetchCompanies() }, [])
 
@@ -64,12 +66,12 @@ export default function Companies() {
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-100 to-brand-200 flex items-center justify-center">
                 <span className="text-lg font-bold text-brand-600">{c.name.charAt(0)}</span>
               </div>
-              <button onClick={() => setMenuOpen(menuOpen === c.id ? null : c.id)} className="p-1 hover:bg-gray-100 rounded">
+              <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === c.id ? null : c.id) }} className="p-1 hover:bg-gray-100 rounded">
                 <MoreHorizontal size={16} className="text-gray-400" />
               </button>
             </div>
             {menuOpen === c.id && (
-              <div className="absolute right-5 top-14 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+              <div onClick={e => e.stopPropagation()} className="absolute right-5 top-14 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
                 <button onClick={() => openEdit(c)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                   <Edit2 size={14} /> Edit
                 </button>

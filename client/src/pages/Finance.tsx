@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useSettings } from '../context/SettingsContext'
+import { useMenuClose } from '../hooks/useClickOutside'
 import { apiUrl } from '../api'
 import { Plus, Edit2, Trash2, MoreHorizontal, Receipt, TrendingDown, DollarSign, Wallet } from 'lucide-react'
 import Modal from '../components/Modal'
@@ -26,6 +27,7 @@ export default function Finance() {
   const [invoiceForm, setInvoiceForm] = useState({ amount: 0, issue_date: '', due_date: '', notes: '' })
   const [expenseForm, setExpenseForm] = useState({ title: '', amount: 0, category: 'other', expense_date: '', description: '' })
   const [menuOpen, setMenuOpen] = useState<string | null>(null)
+  useMenuClose(menuOpen, setMenuOpen)
   const [stats, setStats] = useState({ totalInvoiced: 0, totalExpenses: 0, pendingInvoices: 0, paidInvoices: 0 })
 
   const headers = () => ({ 'Content-Type': 'application/json', Authorization: `Bearer ${token}` })
@@ -216,7 +218,8 @@ export default function Finance() {
             </div>
             <button onClick={() => openInvoiceModal()} className="btn-primary flex items-center gap-2"><Plus size={18} /> New Invoice</button>
           </div>
-          <div className="card overflow-hidden">
+          <div className="card overflow-x-auto">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead><tr className="bg-gray-50">
                 <th className="table-header">Invoice #</th>
@@ -235,11 +238,11 @@ export default function Finance() {
                     <td className="table-cell text-gray-500">{inv.issue_date ? new Date(inv.issue_date).toLocaleDateString() : '-'}</td>
                     <td className="table-cell text-gray-500">{inv.due_date ? new Date(inv.due_date).toLocaleDateString() : '-'}</td>
                     <td className="table-cell relative">
-                      <button onClick={() => setMenuOpen(menuOpen === inv.id ? null : inv.id)} className="p-1 hover:bg-gray-100 rounded">
+                      <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === inv.id ? null : inv.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
                       {menuOpen === inv.id && (
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                        <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
                           <button onClick={() => { openInvoiceModal(inv); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             <Edit2 size={14} /> Edit
                           </button>
@@ -258,6 +261,7 @@ export default function Finance() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </>
       )}
@@ -273,7 +277,8 @@ export default function Finance() {
             </div>
             <button onClick={() => openExpenseModal()} className="btn-primary flex items-center gap-2"><Plus size={18} /> New Expense</button>
           </div>
-          <div className="card overflow-hidden">
+          <div className="card overflow-x-auto">
+            <div className="overflow-x-auto">
             <table className="w-full">
               <thead><tr className="bg-gray-50">
                 <th className="table-header">Title</th>
@@ -292,11 +297,11 @@ export default function Finance() {
                     <td className="table-cell text-gray-500">{exp.expense_date ? new Date(exp.expense_date).toLocaleDateString() : '-'}</td>
                     <td className="table-cell text-gray-500 max-w-[200px] truncate">{exp.description || '-'}</td>
                     <td className="table-cell relative">
-                      <button onClick={() => setMenuOpen(menuOpen === exp.id ? null : exp.id)} className="p-1 hover:bg-gray-100 rounded">
+                      <button onClick={e => { e.stopPropagation(); setMenuOpen(menuOpen === exp.id ? null : exp.id) }} className="p-1 hover:bg-gray-100 rounded">
                         <MoreHorizontal size={16} className="text-gray-400" />
                       </button>
                       {menuOpen === exp.id && (
-                        <div className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-10">
+                        <div onClick={e => e.stopPropagation()} className="absolute right-0 top-full mt-1 w-36 bg-white rounded-lg shadow-lg border border-gray-100 py-1 z-20">
                           <button onClick={() => { openExpenseModal(exp); setMenuOpen(null) }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
                             <Edit2 size={14} /> Edit
                           </button>
@@ -310,6 +315,7 @@ export default function Finance() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </>
       )}
